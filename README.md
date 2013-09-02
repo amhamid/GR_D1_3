@@ -12,11 +12,11 @@ How to compile:
 ===============
 * Go to the root directory of this project
 * Enter ghc interactive mode and include lib directory to import libraries from the book:
-```haskell
+```
 ghci -ilib/
 ```
 * Compile the file:
-```haskell
+```
 :l chapter-{X}/Sol{X}.hs
 ```
 
