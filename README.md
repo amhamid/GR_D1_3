@@ -1,5 +1,5 @@
-GR_D1_3
-=======
+Group D1-3
+==========
 Software Specification &amp; Testing
 
 Directory Structure:
@@ -12,8 +12,11 @@ How to compile:
 ===============
 * Go to the root directory of this project
 * Enter ghc interactive mode and include lib directory to import libraries from the book:
+```haskell
 ghci -ilib/
+```
 * Compile the file:
+```haskell
 :l chapter-{X}/Sol{X}.hs
-
+```
 
