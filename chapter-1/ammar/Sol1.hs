@@ -1,6 +1,7 @@
 module Sol1 where
 	
 import GS
+import Data.List
 
 -- exercise 1.3
 mydivides :: Integer -> Integer -> Bool
@@ -48,6 +49,24 @@ count c s = length (filter (==c) s)
 blowup :: String -> String
 blowup xs = [ x | (n,y) <- zip [1..] xs , x <- take n (repeat y)]
 
+
+-- exercise 1.15
+sortString :: [String] -> [String]
+-- TODO consider re-implementing Data.List.sort for my better understanding of functional programming
+sortString xs = sort xs 
+
+
+-- exercise 1.17
+-- redefine prefix function, just for my understanding
+myprefix :: String -> String -> Bool
+myprefix [] ys = True
+myprefix xs [] = False
+myprefix (x:xs) (y:ys) = (x==y) && myprefix xs ys
+
+substring :: String -> String -> Bool
+substring [] ys = True
+substring xs [] = False
+substring (x:xs) (y:ys) = ((x==y) && prefix xs ys) || substring (x:xs) ys
 
 
 
