@@ -173,6 +173,122 @@ blowup :: String -> String
 blowup x  | x == []   = "" 
           | otherwise = (blowup (reverse (tail (reverse x)))) ++ (myrepeat [(last x)] (length x)) 
 
+-- Exercise 1.15: sort string
+delFstChr :: Char -> String -> String
+delFstChr c (x:xs) | c == x    = xs 
+                   | otherwise = x : delFstChr c xs
+
+mnmChr :: String -> Char
+mnmChr []     = error "empty list"
+mnmChr [x]    = x
+mnmChr (x:xs) = min x (mnmChr xs)
+
+srtString :: String -> String
+srtString [] = []
+srtString xs = m : (srtString (delFstChr m xs)) where m = mnmChr xs
+
+-- Exercise 1.16: prefix
+myPrefix :: String -> String -> Bool
+myPrefix str1 str2 | (length str1) > (length str2)     = False
+                   | str1 == (take (length str1) str2) = True
+                   | otherwise                         = False
+
+prefix :: String -> String -> Bool
+prefix [] ys = True
+prefix (x:xs) [] = False
+prefix (x:xs) (y:ys) = (y==x) && prefix xs ys
+
+-- Exercise: 1.17: SubString
+subString :: String -> String -> Bool
+subString [] ys =True
+subString (x:xs) [] = False
+subString (x:xs) (y:ys) = (y==x) && prefix xs ys || subString (x:xs) ys
+
+
+-- +--------------------------------------------------------------------------+
+-- | 1.6 Haskell Types                                                        |
+-- +--------------------------------------------------------------------------+
+
+-- Exercise: 1:18: Find expersions
+-- 1. [String]
+-- 2. (Bool, String)
+-- 3. [(Bool, String)]
+-- 4. ([Bool], String)
+-- 5. Bool -> Bool
+
+-- Don't understand what the meaning of thes exercise
+
+-- Exercise: 1.19: interpeter
+-- 1. head      ==>> *GS> :t head
+--                   head :: [a] -> a
+
+-- 2. last      ==>> *GS> :t last
+--                   last :: [a] -> a
+
+-- 3. init      ==>> *GS> :t init
+--                   init :: [a] -> [a]
+
+-- 4. fst       ==>> *GS> :t fst
+--                   fst :: (a, b) -> a
+
+-- 5. (++)      ==>> *GS> :t (++)
+--                   (++) :: [a] -> [a] -> [a]
+
+-- 6. flip      ==>> *GS> :t flip
+--                   flip :: (a -> b -> c) -> b -> a -> c
+
+-- 7. filp (++) ==>> *GS> :t flip (++)
+--                   flip (++) :: [a] -> [a] -> [a]
+
+
+-- +--------------------------------------------------------------------------+
+-- | 1.7 The Prime Factorization Algorithm                                    |
+-- +--------------------------------------------------------------------------+
+
+
+-- +--------------------------------------------------------------------------+
+-- | 1.8 The map and Filter functions                                         |
+-- +--------------------------------------------------------------------------+
+
+-- Exercise: 1.20: lengths
+lengths :: [[a]] -> [Int]
+lengths []  = []
+lengths [x] = map length [x]
+lengths xs  = map length xs
+
+-- Exercise: 1.21: lengths
+sumlengths :: [[a]] -> Int
+sumlengths []  = 0
+sumlengths [x] = sum' (lengths [x])
+sumlengths xs  = sum' (lengths xs)
+
+-- Exercise: 1.22: improving all primes
+primes0 :: [Integer]
+primes0 = filter prime0 [2..]
+
+-- Exercise: 1.23: improving LD
+ldp :: Integer -> Integer
+ldp n = ldpf primes1 n
+
+ldpf :: [Integer] -> Integer -> Integer
+ldpf (p:ps) n | rem n p == 0 = p
+              | p^2 > n      = n
+              | otherwise    = ldpf ps n
+
+primes1 :: [Integer]
+primes1 = 2 : filter prime [3..]
+
+prime :: Integer -> Bool
+prime n | n < 1     = error "not a positive integer"
+        | n == 1    = False
+        | otherwise = ldp n == n
+
+Exercise: 1.24: can you explain?
+
+no 
+
+
+
 
 
 
