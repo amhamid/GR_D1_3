@@ -69,4 +69,61 @@ substring xs [] = False
 substring (x:xs) (y:ys) = ((x==y) && prefix xs ys) || substring (x:xs) ys
 
 
+-- exercise 1.18
+-- Note: in ghci ---> :t [String] will generate error: 'Not in scope'
+-- 1. type of [String] is [String]
+-- 2..5 types are the same with the questions.
+
+
+-- exercise 1.19
+-- *Sol1> :t head
+-- head :: [a] -> a
+--
+-- *Sol1> :t last
+-- last :: [a] -> a
+--
+-- *Sol1> :t init
+-- init :: [a] -> [a]
+--
+-- *Sol1> :t fst
+-- fst :: (a, b) -> a
+--
+-- *Sol1> :t (++)
+-- (++) :: [a] -> [a] -> [a]
+--
+-- *Sol1> :t flip
+-- flip :: (a -> b -> c) -> b -> a -> c
+-- 
+-- *Sol1> :t flip (++)
+-- flip (++) :: [a] -> [a] -> [a]
+
+
+-- exercise 1.20
+lengths :: [[a]] -> [Int]
+lengths x = map length x
+
+
+-- exercise 1.21
+sumLengths :: [[a]] -> Int
+sumLengths x = sum (lengths x)
+-- alternative with . (for pipe operation, which is the input of first function is the output of the second function | operated from right to left)
+sumLengthsWithDot = sum . lengths  
+-- alternative with $ (to eliminate paranthesis)
+sumLengthsWithDollar x = sum $ lengths x
+
+-- exercise 1.22
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
