@@ -1,16 +1,15 @@
 -- +--------------------------------------------------------------------------+
--- | Modele: GS (chapter 1 of book - The Haskell Road to Logic)               |
+-- | Modele: GS G-etting S-tarted (CH 1 of book - The Haskell Road to Logic)  |
 -- | Auteur: Mehmet Misset                                                    |
 -- | Date  : 3-9-2013                                                         |
 -- +--------------------------------------------------------------------------+
 
-module Sol1
+module GS
 
 where
 
 -- Imports
---import GS
---import Data.List
+-- 
 
 -- +--------------------------------------------------------------------------+
 -- | 1.1 Starting Haskell Interpreter                                         |
