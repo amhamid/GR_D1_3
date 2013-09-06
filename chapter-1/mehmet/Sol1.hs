@@ -1,16 +1,16 @@
-
 -- +--------------------------------------------------------------------------+
 -- | Modele: GS (chapter 1 of book - The Haskell Road to Logic)               |
 -- | Auteur: Mehmet Misset                                                    |
 -- | Date  : 3-9-2013                                                         |
 -- +--------------------------------------------------------------------------+
 
-module GS
+module Sol1
 
 where
 
 -- Imports
-import Data.List
+--import GS
+--import Data.List
 
 -- +--------------------------------------------------------------------------+
 -- | 1.1 Starting Haskell Interpreter                                         |
@@ -283,9 +283,9 @@ prime n | n < 1     = error "not a positive integer"
         | n == 1    = False
         | otherwise = ldp n == n
 
-Exercise: 1.24: can you explain?
+--Exercise: 1.24: can you explain?
 
-no 
+--no 
 
 
 
