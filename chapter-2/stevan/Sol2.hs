@@ -24,3 +24,54 @@ import GS
 import TAMO
 
 
+-- Exercise 2.2
+-- P Q	P XOR Q
+-- t t	   f
+-- t f     t
+-- f t     t
+-- f f     f
+
+-- Exercise 2.4
+-- P XOR Q	!(P<=>Q)
+--    f         f
+--    t         t
+--    t         t
+--    f         f
+--
+-- I have no idea how to conclude that the function infixr 2 <+> is the
+-- correct implementation of XOR, because I can't read what it says/don't 
+-- understand the syntax/grammar.
+
+-- Exercise 2.9
+-- P XOR Q == R XOR Q == P
+-- t     t    f     t    t
+-- t     f    t     f    t
+-- f     t    t     t    f
+-- f     f    f     f    f
+
+-- Exercise 2.11
+-- I don't know how to do it.
+
+-- Exercise 2.13
+-- I don't know how to do it.
+
+-- Exercise 2.15
+-- I think I lost my way in Chapter 2.2.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
