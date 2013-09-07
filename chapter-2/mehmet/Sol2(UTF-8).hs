@@ -19,7 +19,6 @@ where
 -- ║ Imports                                                                  ║
 -- ╚══════════════════════════════════════════════════════════════════════════╝
 
-
 -- ╔══════════════════════════════════════════════════════════════════════════╗
 -- ║ 2.1 Logical Connectives and their Meanings                               ║
 -- ╚══════════════════════════════════════════════════════════════════════════╝
@@ -366,7 +365,7 @@ test_2_19_1a = (     p  == (not q)) == (     p  <=> (not q))
 test_2_19_1b = ((not p) ==      q ) == ((not p) <=>      q )
 
 -- ┌──────────────────────────────────────────────────────────────────────────┐
--- │ Exercise 2.20: Show phi = psi iff P <=> Q                                │
+-- │ Exercise 2.20: Show phi = psi iff phi <=> psi                            │
 -- └──────────────────────────────────────────────────────────────────────────┘
 
 
@@ -381,9 +380,123 @@ test_2_19_1b = ((not p) ==      q ) == ((not p) <=>      q )
 -- └──────────────────────────────────────────────────────────────────────────┘
 -- (z - x) / 2 + x = y where x < z
 
+-- ┌──────────────────────────────────────────────────────────────────────────┐
+-- │ Exercise 2.31: Translate into formula                                    │
+-- └──────────────────────────────────────────────────────────────────────────┘
+-- 1. The equation x^2 + 1 = 0 has a solution
+-- 2. A largest natural number does not exist.
+-- 3. The number 13 is prime (use d|n for 'd divides n').
+-- 4. The number n is prime.
+-- 5. There are infinitely many primes. (there are infinitely many number but 
+--    not every number is a prime, thus is can not be true, but then infinity 
+--    divided by some thing is stil infinity, thus yes it must be true).
+
+-- ┌──────────────────────────────────────────────────────────────────────────┐
+-- │ Exercise 2.32: Translate into formula                                    │
+-- └──────────────────────────────────────────────────────────────────────────┘
+-- 1. Everyone loved Diana. (Use the expersion L(x,y) for x Loved y, and the 
+--    name d for Diana.)
+-- 2. Diana loved everyone.
+-- 3. Man is mortal. (Use M(x) for 'x is a man', and ,M'(x) for 'x is mortal.)
+-- 4. Some birds do not fly. (Use B(x) for 'x is a bird' and F(x) for 'x can 
+--    fly'.)
+
+-- ┌──────────────────────────────────────────────────────────────────────────┐
+-- │ Exercise 2.36: Back to english                                           │
+-- └──────────────────────────────────────────────────────────────────────────┘
+-- 1. for some x witch is a elements of the set rational numbers, x exists 
+--    where x^2 equal to 5.
+-- 2. for all n witch is a element of the set natural numbers, for some m witch
+--    is a element of the set natural numbers, m extist where n is smaller then
+--    m.
+-- 3. for all n witch is a element of the set natural numbers, for some d witch
+--    is a element of the set natural numbers, d does not exist where 1 is 
+--    smaller then d and 2^n + 1 or d divides by 2^n + 1.
+-- 4. more complicated text!
+
+-- ╔══════════════════════════════════════════════════════════════════════════╗
+-- ║ 2.4 Lambda Abstraction                                                   ║
+-- ╚══════════════════════════════════════════════════════════════════════════╝
+
+square1 :: Integer -> Integer
+square1 x = x^2 
+
+square2 :: Integer -> Integer 
+square2 = \ x -> x^2
+
+m1 :: Integer -> Integer -> Integer 
+m1 = \ x -> \ y -> x*y
+
+m2 :: Integer -> Integer -> Integer 
+m2 = \ x y -> x*y
+
+solveQdr :: (Float,Float,Float) -> (Float,Float) 
+solveQdr =  \ (a,b,c) -> if a == 0 then error "not quadratic"
+                         else let d = b^2 - 4*a*c in 
+                         if d < 0 then error "no real solutions"
+                         else 
+                           ((- b + sqrt d) / 2*a,
+                            (- b - sqrt d) / 2*a)
+
+
+-- ╔══════════════════════════════════════════════════════════════════════════╗
+-- ║ 2.7 Logical Handling of the Quantifier                                   ║
+-- ╚══════════════════════════════════════════════════════════════════════════╝ 
+
+-- ┌──────────────────────────────────────────────────────────────────────────┐
+-- │ Exercise 2.39: argue phi == psi iff phi <=> psi                          │
+-- └──────────────────────────────────────────────────────────────────────────┘
+-- need to use some laws...
 
 
 
+-- ┌──────────────────────────────────────────────────────────────────────────┐
+-- │ Exercise 2.41: negations of 2.36                                         │
+-- └──────────────────────────────────────────────────────────────────────────┘
+-- don't get it.
+
+
+-- ╔══════════════════════════════════════════════════════════════════════════╗
+-- ║ 2.8 Quantifiers as Procedures                                            ║
+-- ╚══════════════════════════════════════════════════════════════════════════╝ 
+
+-- any, all :: (a -> Bool) -> [a] -> Bool
+-- any p    = or  . map p
+-- all p    = and . map p
+
+every, some :: [a] -> (a -> Bool) -> Bool
+every xs p = all p xs 
+some  xs p = any p xs
+
+-- ┌──────────────────────────────────────────────────────────────────────────┐
+-- │ Exercise 2.51: Unique                                                    │
+-- └──────────────────────────────────────────────────────────────────────────┘
+-- don't make the array to long and it works fine
+length' :: [a] -> Int
+length' []     = 0
+length' (x:xs) = 1 + length' xs
+
+unique :: (a -> Bool) -> [a] -> Bool
+unique c []     = False
+unique c [x]    = ((length' ( filter c [x] )) == 1) <=> True 
+unique c (x:xs) = ((length' ( filter c (x:xs))) == 1) <=> True 
+
+
+-- ┌──────────────────────────────────────────────────────────────────────────┐
+-- │ Exercise 2.52: parity                                                    │
+-- └──────────────────────────────────────────────────────────────────────────┘
+parity :: [Bool] -> Bool
+parity []     = False
+parity [x]    = False
+parity (x:xs) = (even (length' ( filter (==True) (x:xs))))
+             && (0 <  (length' ( filter (==True) (x:xs))))
+
+
+-- ┌──────────────────────────────────────────────────────────────────────────┐
+-- │ Exercise 2.53: evenNR                                                    │
+-- └──────────────────────────────────────────────────────────────────────────┘
+--evenNR :: (a -> Bool) -> [a] -> Bool
+-- unclear what is meant
 
 
 
