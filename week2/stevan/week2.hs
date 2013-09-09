@@ -2,6 +2,7 @@ module Week2
 
 where
 
+-- Exercise 1
 data Shape  = NoTriangle
             | Equilateral
             | Isosceles
@@ -45,3 +46,11 @@ triangle a b c = if (a < 1 || b < 1 || c < 1)                                   
 --
 --
 --------------------------------------------------------------------------------
+
+
+
+-- Exercise 2
+
+
+
+
