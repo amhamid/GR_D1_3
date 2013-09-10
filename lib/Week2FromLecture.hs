@@ -1,4 +1,4 @@
-module Week2
+module Week2FromLecture
 
 where 
 
@@ -163,3 +163,4 @@ nnf (Neg (Dsj fs)) = Cnj (map (nnf.Neg) fs)
 
 lighter, heavier :: Int
 lighter = 3
+heavier = 0
