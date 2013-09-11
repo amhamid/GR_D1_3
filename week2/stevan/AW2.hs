@@ -21,7 +21,7 @@ triangle a b c = if (a < 1 || b < 1 || c < 1)                                   
 -- Time spent: reading up on the wikipedia page (30min)
 --             + writing and testing code (30min)
 --             + writing test repport (90min)
---             = 
+--             = 150min
 --
 -- Test Repport
 -- Total number of test cases will be 9! 9 because every next test case, following the
