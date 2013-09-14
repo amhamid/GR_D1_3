@@ -27,47 +27,42 @@ triangle a b c
 -- so we can run the following: 
 -- 	(triangle 1 1 100 /= NoTriangle) == False and this should return to True
 --
--- Using proof by contradiction, we can test this triangle formula.
 -- However, because Integer has no maxBound therefore there is no way I cannot manual test it for all inputs.
 
 
 ------------------------------------
--- exercise 2 (Time spent: 3 hours)
+-- exercise 2 (Time spent: 2 hours)
 ------------------------------------
 
 contradiction :: Form -> Bool
 contradiction f = all (\ v -> eval v f && eval v (Neg f)) (allVals f)
 
--- TODO add some explanation
-
+-- For all valuations in 'contradiction (Form)' should always return False
 
 
 tautology :: Form -> Bool
-tautology f = all (\ v -> eval v f || eval v (Neg f)) (allVals f)
+tautology f = not (contradiction f)
 
--- TODO add some explanation
-
+-- For all valuations in 'tautology (Form)' should always return True
 
 
 entails :: Form -> Form -> Bool
 entails f g = tautology (Impl f g)
 
--- TODO add some explanation
-
+-- f has g as logical consequence/entailment if and only if 'f -> g' is a tautology
 
 
 equiv :: Form -> Form -> Bool
 equiv f g = all (\ v -> eval v (h)) (allVals (h)) where h = Equiv f g
 
--- TODO add some explanation
-
+-- f is equivalence to g if only if all valuations of f is equal to all valuations of g
 
 
 -----------------------------------
 -- exercise 3 (Time spent: 1 hour)
 -----------------------------------
 
--- precondition: input is arrowfree
+-- precondition: input is arrowfree and nnf
 cnf :: Form -> Form
 cnf (Prop x) = Prop x
 cnf (Neg(Prop x)) = Neg (Prop x)
@@ -81,9 +76,9 @@ dist (Cnj [f,f'], g) = Cnj [dist (f,g), dist(f', g)]
 dist (f, Cnj [g, g']) = Cnj [dist (f,g), dist(f, g')]
 dist (f, g) = Dsj [f, g]
 
--- TODO add some explanation
+-- Testing:
 
-
-
-
+-- after converting Form to CNF then the result should be equivalent with original Form
+-- as an example below: we convert form1 to CNF and make a comparison between the original and its convertion. (also for form2 and form3)
+testCnf = and ( map (\ f -> equiv (cnf (nnf(arrowfree f))) f) [form1, form2, form3] ) 
 
