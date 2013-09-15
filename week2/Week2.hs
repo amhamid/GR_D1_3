@@ -164,3 +164,85 @@ nnf (Neg (Dsj fs)) = Cnj (map (nnf.Neg) fs)
 lighter, heavier :: Int
 lighter = 3
 heavier = 0
+
+-- ┌──────────────────────────────────────────────────────────────────────────┐
+-- │ Definition of the type of shape of the triangle                          │
+-- └──────────────────────────────────────────────────────────────────────────┘
+data Shape = NoTriangle 
+           | Equilateral
+           | Isosceles 
+           | Rectangular
+           | Other deriving (Eq,Show)
+
+-- ┌──────────────────────────────────────────────────────────────────────────┐
+-- │ Definition of triangle decription                                        │
+-- └──────────────────────────────────────────────────────────────────────────┘
+triangle a b c = if ((a < 1) || 
+                     (b < 1) || 
+                     (c < 1)) then NoTriangle
+
+            else if ((a == b) && 
+                     (b == c)) then Equilateral
+
+            else if ((( a^2 + b^2 ) == ( c^2 )) ||
+                     (( b^2 + c^2 ) == ( a^2 )) ||
+                     (( c^2 + a^2 ) == ( b^2 ))) then Rectangular
+
+            else if (((a == b) && (not (a == c))) ||
+                     ((b == c) && (not (b == a))) ||
+                     ((c == a) && (not (c == b)))) then Isosceles
+
+            else Other
+
+-- ┌──────────────────────────────────────────────────────────────────────────┐
+-- │ 9 Tests are needed, one for every test in the code                       │
+-- └──────────────────────────────────────────────────────────────────────────┘
+test1_1 = (triangle (-1) 1  0 )  -- NoTriangle
+test1_2 = (triangle   1  1  1 )  -- Equilateral
+test1_3 = (triangle   3  4  5 )  -- Rectangular
+test1_4 = (triangle   4  3  5 )  -- Rectangular
+test1_5 = (triangle   5  4  3 )  -- Rectangular
+test1_6 = (triangle   1  1  2 )  -- Isosceles
+test1_7 = (triangle   1  2  2 )  -- Isosceles
+test1_8 = (triangle   2  2  1 )  -- Isosceles
+test1_9 = (triangle   1  3  4 )  -- other
+test1   = print(test1_1, 
+                test1_2, 
+                test1_3, test1_4, test1_5,
+                test1_6, test1_7, test1_8,
+                test1_9)
+
+
+-- ┌──────────────────────────────────────────────────────────────────────────┐
+-- │ A contradiction is formula that is NOT satisfiabe                        │
+-- └──────────────────────────────────────────────────────────────────────────┘
+contradiction :: Form -> Bool
+contradiction f = not (any (\ v -> eval v f) (allVals f))
+
+
+-- ┌──────────────────────────────────────────────────────────────────────────┐
+-- │ A Tautology formula that is satisfiabe for all you put into it           │
+-- └──────────────────────────────────────────────────────────────────────────┘
+tautology :: Form -> Bool
+tautology f = all (\ v -> eval v f) (allVals f)
+
+
+-- ┌──────────────────────────────────────────────────────────────────────────┐
+-- │ A logical entailment is P |= Q if and if only P <=> Q                    │
+-- └──────────────────────────────────────────────────────────────────────────┘
+entails :: Form -> Form -> Bool
+entails f g = ((     (tautology  f)  &&      (tautology g)  )  || 
+               ((not (tautology  f)) && (not (tautology g) )))
+-- ┌──────────────────────────────────────────────────────────────────────────┐
+-- │ A logical equivalence is .....                                           │
+-- └──────────────────────────────────────────────────────────────────────────┘
+equiv :: Form -> Form -> Bool 
+equiv f g = (tautology  f) == (tautology g)
+
+
+-- ┌──────────────────────────────────────────────────────────────────────────┐
+-- │ CNF                                                                      │
+-- └──────────────────────────────────────────────────────────────────────────┘
+toCNF :: Form -> Form
+toCNF f = nnf (arrowfree f)
+
