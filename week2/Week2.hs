@@ -1,248 +1,82 @@
-module Week2
+module Week2 where
 
-where 
+-- importing 'lib/Week2FromLecture.hs' (which is given during the lecture)
+import Week2FromLecture
 
-import Data.List
-import Data.Char
-
-data Coin = C Int
-
-w :: Coin -> Float 
-w (C n) = if n == lighter then 1 - 0.01
-          else if n == heavier then 1 + 0.01
-          else 1
-
-weight :: [Coin] -> Float
-weight = sum . (map w)
-
-balance :: [Coin] -> [Coin] -> Ordering 
-balance xs ys = 
-  if weight xs < weight ys then LT
-  else if weight xs > weight ys then GT
-  else EQ
-
-outcome :: (Float -> Bool) -> (Float, Bool -> Float) 
-            -> Float
-outcome accept (x,decide) = 
-  if accept x then x + (decide True)
-              else (1 - x) + (decide False)
-
-jill :: Float -> Bool
-jill = \ x -> x > 1/2
-
-joe :: (Float, Bool -> Float)
-joe = (2/3, \p -> if p then 1/100000 else 1/2)
-
-jillVariations :: [Float -> Bool]
-jillVariations = 
-   [ \ x -> x >= y/100 | y <- [50..100] ]
-
-joeVariations :: [(Float, Bool -> Float)]
-joeVariations = 
-  [(z/100,\ p -> if p then 1/100000000 else 1/2) 
-                               | z <- [50..100] ]
-
-testJill1 :: Float
-testJill1 = minimum 
-  [ outcome ji jo | ji <- jillVariations, 
-                    jo <- joeVariations ]
-
-testJill2 :: Float
-testJill2 = minimum 
-  [ outcome jill jo | jo <- joeVariations ]
-
-testJoe1 :: Float
-testJoe1 = 2 - maximum 
-  [ outcome ji jo | ji <- jillVariations, 
-                    jo <- joeVariations ]
-
-testJoe2 :: Float
-testJoe2 = 2 - maximum 
-  [ outcome ji joe | ji <- jillVariations ]
-
-run :: Integer -> [Integer]
-run n | n < 1 = error "argument not positive"
-      | n == 1 = [1]
-      | even n = n: run (div n 2)
-      | odd n  = n: run (3*n+1)
-
-type Name = Int
-
-data Form = Prop Name
-          | Neg  Form
-          | Cnj [Form]
-          | Dsj [Form]
-          | Impl Form Form 
-          | Equiv Form Form 
-          deriving Eq
-
-instance Show Form where 
-  show (Prop x)   = show x
-  show (Neg f)    = '-' : show f 
-  show (Cnj fs)     = "*(" ++ showLst fs ++ ")"
-  show (Dsj fs)     = "+(" ++ showLst fs ++ ")"
-  show (Impl f1 f2)  = "(" ++ show f1 ++ "==>" 
-                           ++ show f2 ++ ")"
-  show (Equiv f1 f2)  = "(" ++ show f1 ++ "<=>" 
-                           ++ show f2 ++ ")"
-
-showLst,showRest :: [Form] -> String
-showLst [] = ""
-showLst (f:fs) = show f ++ showRest fs
-showRest [] = ""
-showRest (f:fs) = ' ': show f ++ showRest fs
-
-p = Prop 1
-q = Prop 2
-r = Prop 3
-
-form1 = Equiv (Impl p q) (Impl (Neg q) (Neg p))
-form2 = Equiv (Impl p q) (Impl (Neg p) (Neg q))
-form3 = Impl (Cnj [Impl p q, Impl q r]) (Impl p r)
-
-propNames :: Form -> [Name]
-propNames = sort.nub.pnames where 
-  pnames (Prop name) = [name]
-  pnames (Neg f)  = pnames f
-  pnames (Cnj fs) = concat (map pnames fs)
-  pnames (Dsj fs) = concat (map pnames fs)
-  pnames (Impl f1 f2) = concat (map pnames [f1,f2])
-  pnames (Equiv f1 f2) = 
-          concat (map pnames [f1,f2])
-
-type Valuation = [(Name,Bool)]
-
--- all possible valuations for list of prop letters
-genVals :: [Name] -> [Valuation]
-genVals [] = [[]]
-genVals (name:names) = 
-  map ((name,True) :) (genVals names)
-  ++ map ((name,False):) (genVals names)
-
--- generate all possible valuations for a formula
-allVals :: Form -> [Valuation]
-allVals = genVals . propNames
-
-eval :: Valuation -> Form -> Bool
-eval [] (Prop c)    = error ("no info: " ++ show c)
-eval ((i,b):xs) (Prop c)
-     | c == i    = b
-     | otherwise = eval xs (Prop c)
-eval xs (Neg f)  = not (eval xs f)
-eval xs (Cnj fs) = all (eval xs) fs
-eval xs (Dsj fs) = any (eval xs) fs
-eval xs (Impl f1 f2) = 
-     not (eval xs f1) || eval xs f2
-eval xs (Equiv f1 f2) = eval xs f1 == eval xs f2
-
-satisfiable :: Form -> Bool
-satisfiable f = any (\ v -> eval v f) (allVals f)
-
--- no precondition: should work for any formula. 
-arrowfree :: Form -> Form 
-arrowfree (Prop x) = Prop x 
-arrowfree (Neg f) = Neg (arrowfree f)
-arrowfree (Cnj fs) = Cnj (map arrowfree fs)
-arrowfree (Dsj fs) = Dsj (map arrowfree fs)
-arrowfree (Impl f1 f2) = 
-  Dsj [Neg (arrowfree f1), arrowfree f2]
-arrowfree (Equiv f1 f2) = 
-  Dsj [Cnj [f1', f2'], Cnj [Neg f1', Neg f2']]
-  where f1' = arrowfree f1
-        f2' = arrowfree f2
-
--- precondition: input is arrowfree
-nnf :: Form -> Form 
-nnf (Prop x) = Prop x
-nnf (Neg (Prop x)) = Neg (Prop x)
-nnf (Neg (Neg f)) = nnf f
-nnf (Cnj fs) = Cnj (map nnf fs)
-nnf (Dsj fs) = Dsj (map nnf fs)
-nnf (Neg (Cnj fs)) = Dsj (map (nnf.Neg) fs)
-nnf (Neg (Dsj fs)) = Cnj (map (nnf.Neg) fs)
-
-lighter, heavier :: Int
-lighter = 3
-heavier = 0
 
 -- ┌──────────────────────────────────────────────────────────────────────────┐
--- │ Definition of the type of shape of the triangle                          │
+-- │ Exercise 1 - Triangle (Time spent: 1 hour)                               │
 -- └──────────────────────────────────────────────────────────────────────────┘
+
 data Shape = NoTriangle 
            | Equilateral
            | Isosceles 
            | Rectangular
            | Other deriving (Eq,Show)
 
--- ┌──────────────────────────────────────────────────────────────────────────┐
--- │ Definition of triangle decription                                        │
--- └──────────────────────────────────────────────────────────────────────────┘
-triangle a b c = if ((a < 1) || 
-                     (b < 1) || 
-                     (c < 1)) then NoTriangle
+triangle :: Integer -> Integer -> Integer -> Shape
+triangle a b c
+         | (a + b < c) || (a + c < b) || (b + c < a) = NoTriangle
+         | (a == b) && (a == c) = Equilateral
+         | (a == b) || (a == c) || (b == c) = Isosceles
+         | (a^2 + b^2 == c^2) || (a^2 + c^2 == b^2) || (b^2 + c^2 == a^2) = Rectangular
+         | otherwise = Other
 
-            else if ((a == b) && 
-                     (b == c)) then Equilateral
+-- Testing report:
+--
+-- We can use algebraic reasoning that the formula above is correct; no need to test it manually.
+-- However, we could also prove it by means of contradiction.
+--
+-- For NoTriangle case, let a = 1, b = 1, c = 100 then it should be a NoTriangle; either you visualize it or actua    lly try to build a real triangle and for sure it won't work.
+-- so we can run the following: 
+--      (triangle 1 1 100 /= NoTriangle) == False and this should return to True
+--
+-- However, because Integer has no maxBound therefore there is no way I cannot manual test it for all inputs.
 
-            else if ((( a^2 + b^2 ) == ( c^2 )) ||
-                     (( b^2 + c^2 ) == ( a^2 )) ||
-                     (( c^2 + a^2 ) == ( b^2 ))) then Rectangular
-
-            else if (((a == b) && (not (a == c))) ||
-                     ((b == c) && (not (b == a))) ||
-                     ((c == a) && (not (c == b)))) then Isosceles
-
-            else Other
-
--- ┌──────────────────────────────────────────────────────────────────────────┐
--- │ 9 Tests are needed, one for every test in the code                       │
--- └──────────────────────────────────────────────────────────────────────────┘
-test1_1 = (triangle (-1) 1  0 )  -- NoTriangle
-test1_2 = (triangle   1  1  1 )  -- Equilateral
-test1_3 = (triangle   3  4  5 )  -- Rectangular
-test1_4 = (triangle   4  3  5 )  -- Rectangular
-test1_5 = (triangle   5  4  3 )  -- Rectangular
-test1_6 = (triangle   1  1  2 )  -- Isosceles
-test1_7 = (triangle   1  2  2 )  -- Isosceles
-test1_8 = (triangle   2  2  1 )  -- Isosceles
-test1_9 = (triangle   1  3  4 )  -- other
-test1   = print(test1_1, 
-                test1_2, 
-                test1_3, test1_4, test1_5,
-                test1_6, test1_7, test1_8,
-                test1_9)
 
 
 -- ┌──────────────────────────────────────────────────────────────────────────┐
--- │ A contradiction is formula that is NOT satisfiabe                        │
+-- │ Exercise 2 (Time spent: 2 hours)                                         │
 -- └──────────────────────────────────────────────────────────────────────────┘
+
+-- A contradiction is formula that is NOT satisfiable
 contradiction :: Form -> Bool
-contradiction f = not (any (\ v -> eval v f) (allVals f))
+contradiction f = not (satisfiable f)
 
-
--- ┌──────────────────────────────────────────────────────────────────────────┐
--- │ A Tautology formula that is satisfiabe for all you put into it           │
--- └──────────────────────────────────────────────────────────────────────────┘
+-- A Tautology formula that is satisfiabe for all you put into it
 tautology :: Form -> Bool
-tautology f = all (\ v -> eval v f) (allVals f)
+tautology f = not (contradiction f)
 
-
--- ┌──────────────────────────────────────────────────────────────────────────┐
--- │ A logical entailment is P |= Q if and if only P <=> Q                    │
--- └──────────────────────────────────────────────────────────────────────────┘
+-- f has g as logical consequence/entailment if and only if 'f -> g' is a tautology
 entails :: Form -> Form -> Bool
-entails f g = ((     (tautology  f)  &&      (tautology g)  )  || 
-               ((not (tautology  f)) && (not (tautology g) )))
--- ┌──────────────────────────────────────────────────────────────────────────┐
--- │ A logical equivalence is .....                                           │
--- └──────────────────────────────────────────────────────────────────────────┘
+entails f g = tautology (Impl f g)
+
+-- f is equivalence to g if only if all valuations of f is equal to all valuations of g
 equiv :: Form -> Form -> Bool 
-equiv f g = (tautology  f) == (tautology g)
+equiv f g = all (\ v -> eval v (h)) (allVals (h)) where h = Equiv f g
+
 
 
 -- ┌──────────────────────────────────────────────────────────────────────────┐
--- │ CNF                                                                      │
+-- │ Exercise 3 - CNF (Time spent: 1 hour)                                    │
 -- └──────────────────────────────────────────────────────────────────────────┘
-toCNF :: Form -> Form
-toCNF f = nnf (arrowfree f)
+-- precondition: input is arrowfree and nnf
+cnf :: Form -> Form
+cnf (Prop x) = Prop x
+cnf (Neg(Prop x)) = Neg (Prop x)
+cnf (Cnj [f, g]) = Cnj [cnf f, cnf g]
+cnf (Dsj [f, g]) = dist (cnf f, cnf g)
+ 
+-- cnf helper to translate 'P V (Q ^ R)' to '(P V Q) ^ (P V R)' 
+--            and also for '(P ^ Q) V R' to '(P V R) ^ (Q V R)'
+dist :: (Form, Form) -> Form
+dist (Cnj [f,f'], g) = Cnj [dist (f,g), dist(f', g)]
+dist (f, Cnj [g, g']) = Cnj [dist (f,g), dist(f, g')]
+dist (f, g) = Dsj [f, g]
+ 
+-- Testing:
+ 
+-- after converting Form to CNF then the result should be equivalent with original Form
+-- as an example below: we convert form1 to CNF and make a comparison between the original and its convertion. (al    so for form2 and form3)
+testCnf = and ( map (\ f -> equiv (cnf (nnf(arrowfree f))) f) [form1, form2, form3] )
 
