@@ -53,12 +53,12 @@ triangle a b c = if (a < 1 || b < 1 || c < 1)                                   
 --
 -- Isoceles
 -- If and only if two of the three values are equal then it is an Isoceles triangle
---  p q r ((p && q) || (q && r) || (p && r)) && !NoTriangle <=> Isoceles
+--  p q r ((p && q) || (q && r) || (p && r)) && !Equilateral <=> Isoceles
 --  0 0 0     0           0           0           1               0
---  0 0 1     0           0           0           1               0
---  0 1 0     0           0           0           1               0
+--  0 0 1     0           0           0           0               0
+--  0 1 0     0           0           0           0               0
 --  0 1 1     0           1           0           1               1
---  1 0 0     0           0           0           1               0
+--  1 0 0     0           0           0           0               0
 --  1 0 1     0           0           1           1               1
 --  1 1 0     1           0           0           1               1
 --  1 1 1     1           1           1           0               0
