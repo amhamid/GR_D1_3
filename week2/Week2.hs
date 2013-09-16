@@ -14,8 +14,10 @@ data Shape = NoTriangle
            | Rectangular
            | Other deriving (Eq,Show)
 
+-- precondition: a, b, c should be bigger or equal to 1
 triangle :: Integer -> Integer -> Integer -> Shape
 triangle a b c
+	 | a < 1 || b < 1 || c < 1 = error "should be positive number bigger or equal than 1"
          | (a + b < c) || (a + c < b) || (b + c < a) = NoTriangle
          | (a == b) && (a == c) = Equilateral
          | (a == b) || (a == c) || (b == c) = Isosceles
@@ -32,6 +34,68 @@ triangle a b c
 --      (triangle 1 1 100 /= NoTriangle) == False and this should return to True
 --
 -- However, because Integer has no maxBound therefore there is no way I cannot manual test it for all inputs.
+
+
+-- This is what we get so far:
+
+-- Total number of test cases will be 9! 9 because every next test case, following the
+-- order(NoTriangle -> Equilateral -> Isoceles -> Rectangular -> Other) eliminates the
+-- need for additional test cases.
+-- But if you really want to do all the test cases, you have 38 possible test cases.
+--
+-- NoTriangle has 1 variable	2^1
+-- Equilateral has 2 variables	2^2
+-- Isoceles has 3 variables	2^3
+-- Rectangular has 3 variables	2^3
+-- Other has 4 variables	2^4
+--						
+-- Total test cases		38
+-- 
+-- NoTriangle
+-- If and only if any of the values are below 1 then it is not a triangle
+--  p <=> NoTriangle
+--  0       0
+--  1       1
+--
+-- Equilateral
+-- Precondition: Is a triangle
+-- If and only if all the values are equal then it is an Equilateral triangle
+--  p && q  :=  Equilateral
+--  0    0  		0
+--  0    1      	0
+--  1    0      	0
+--  1    1      	1
+--
+-- Isoceles
+-- Precondition: NOT Equilateral
+-- If and only if two of the three values are equal then it is an Isoceles triangle
+--  p || q || r    :=  Isoceles
+--  0    0    0              0
+--  0    0    1      	     1
+--  0    1    0      	     1
+--  0    1    1     	     0
+--  1    0    0              1
+--  1    0    1     	     0
+--  1    1    0              0
+--  1    1    1 	     0
+--
+-- Rectangular
+-- Precondition: NOT Isoceles
+-- If and only if a^2 + b^2 = c^2 then it is a Rectangular triangle
+-- (p || q || r) :=  Rectangular
+--  0    0    0           0
+--  0    0    1           1
+--  0    1    0           1
+--  0    1    1           0
+--  1    0    0           1
+--  1    0    1           0
+--  1    1    0           0
+--  1    1    1           0
+--
+-- Other
+-- Any values that don't conform to one of the previous test case will do
+-- Triangle && NOT(Equilateral) && NOT(Isoceles) && NOT(Rectangular) :=  Other
+--    1              1                   1                 1               1
 
 
 
