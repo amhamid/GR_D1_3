@@ -17,6 +17,6 @@ ghci -ilib/
 ```
 * Compile the file:
 ```
-:l chapter-{X}/Sol{X}.hs
+:l week-nr/{x}.hs
 ```
 
