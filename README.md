@@ -5,8 +5,8 @@ Software Specification &amp; Testing
 Directory Structure:
 ====================
 * Libraries from the book are placed in the 'lib' directory.
-* Every chapter has its own folder.
-* Inside every chapter folder, there are individual folders for each team member (e.g. ammar and mehmet folder). This is used sandbox before actually putting the final solution (e.g. chapter-1/Sol1.hs).
+* Every week has its own folder.
+* Inside every week folder, there are individual folders for each team member (e.g. ammar, mehmet and stevan folder). This is used sandbox before actually putting the final solution (e.g. week-1/{name}.hs).
 
 How to compile:
 ===============
