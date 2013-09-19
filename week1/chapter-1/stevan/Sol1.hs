@@ -78,12 +78,18 @@ blowup x = concatMap g (zip x [1..])
 -- srtString :: [String] -> [String]
 -- srtString [x] = sort [x]
 -- I give up...
+-- VVZ: how about this?
+-- VVZ: srtString [] = []
+-- VVZ: srtString ss = mins:(srtString(removeFstString mins ss)) where mins = mnmString ss
+-- VVZ: where removeFstString works the same way as removeFst
+
 
 -- Exercise 1.17
 -- substring :: String -> String -> Bool
 -- substring xs ys		| xs == ys			= True
 -- 						| isInfixOf xs ys	= True
 -- I give up...
+-- VVZ: you were on the right track, the only step missing is when xs is not the prefix of ys, then we look for xs in the tail of ys
 
 -- Exercise 1.18
 -- Sure...
@@ -92,8 +98,10 @@ blowup x = concatMap g (zip x [1..])
 -- ...
 
 -- Exercise 1.20
+-- VVZ: lengths = map length
 
 -- Exercise 1.21
+-- VVZ: sumLengths = sum . lengths
 
 -- Exercise 1.24
 -- No...
@@ -101,15 +109,4 @@ blowup x = concatMap g (zip x [1..])
 -- I spent about 8 hours on chapter 1 and didnt manage to finish it properly.
 -- Next is chapter 2 and then there is a PaperSession...
 -- I am very much starting to worry about my available timeframe and understanding of Haskell.
-
-
-
-
-
-
-
-
-
-
-
-
+-- VVZ: don't hesitate to ask questions when you have them!

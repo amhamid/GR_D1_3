@@ -57,21 +57,5 @@ import TAMO
 
 -- Exercise 2.15
 -- I think I lost my way in Chapter 2.2.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+-- VVZ: try to re-read it and ask questions about what you don't understand
+-- VVZ: another way would be to google up some real Haskell code and read that in order to get the feel of the language, if that is the problem

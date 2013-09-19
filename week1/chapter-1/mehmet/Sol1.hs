@@ -252,12 +252,14 @@ subString (x:xs) (y:ys) = (y==x) && prefix xs ys || subString (x:xs) ys
 -- Exercise: 1.20: lengths
 lengths :: [[a]] -> [Int]
 lengths []  = []
+-- VVZ: the following line is not needed, since xs can be [x]
 lengths [x] = map length [x]
 lengths xs  = map length xs
 
 -- Exercise: 1.21: lengths
 sumlengths :: [[a]] -> Int
 sumlengths []  = 0
+-- VVZ: the following line is not needed, since xs can be [x]
 sumlengths [x] = sum' (lengths [x])
 sumlengths xs  = sum' (lengths xs)
 

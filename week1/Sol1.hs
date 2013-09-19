@@ -110,6 +110,7 @@ sumLengths x = sum (lengths x)
 sumLengthsWithDot = sum . lengths  
 -- alternative with $ (to eliminate paranthesis)
 sumLengthsWithDollar x = sum $ lengths x
+-- VVZ: I'd go for the dot version - it's shorter than the rest ;)
 
 -- exercise 1.24
 -- no changes because you can left out arguments and therefore you created a partially applied function that basically return a function for you with number of parameter that you left out.

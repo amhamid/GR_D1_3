@@ -30,6 +30,7 @@ maximumInt (x:xs) = max x (maximumInt xs)
 
 -- exercise 1.10
 removeFst :: Integer -> [Integer] -> [Integer]
+-- VVZ: incorrect: it removes all elements equal to the given one, not just the first one
 removeFst m xs = filter (/=m) xs 
 
 
