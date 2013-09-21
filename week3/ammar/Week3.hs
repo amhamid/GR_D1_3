@@ -1,11 +1,12 @@
 module Week3 where
 
-import Week3FromLecture hiding (Neg)
+import Week3FromLecture
 import TechniquesWeek3FromLecture
 import System.Random
 import Data.List
 import Week2 -- in lib folder
-import Week2FromLecture
+import Week2FromLecture hiding (Neg)
+import Data.Char
 
 
 -- exercise 3
@@ -57,11 +58,38 @@ testCnf = testForms 10 (\ f -> let g = (cnf(nnf(arrowfree f))) in equiv f g)
 
 
 -- exercise 7
+getRandomInts :: Int -> Int -> IO Int
+getRandomInts n m = getStdRandom (randomR (n,m))
 
+getRandomFormula :: Int -> IO Formula
+getRandomFormula 0 = do m <- getRandomInts 97 122  -- 97 is char 'a' and 122 is char 'z'
+                        return (Atom ([chr m]) [])
 
+getRandomFormula d = do n <- getRandomInt 5
+			case n of
+				0 -> do m <- getRandomInts 97 122
+					return (Atom ([chr m]) [])
+				1 -> do f <- getRandomFormula (d-1)
+					return (Neg f)
+				2 -> do m  <- getRandomInt 5
+					fs <- getRandomFormulas (d-1) m
+					return (Conj fs)
+				3 -> do m  <- getRandomInt 5
+					fs <- getRandomFormulas (d-1) m
+					return (Disj fs)
+				4 -> do m <- getRandomInts 97 122
+					f <- getRandomFormula (d-1)
+					return (Forall ([chr m]) f)
+				5 -> do m <- getRandomInts 97 122
+					f <- getRandomFormula (d-1)
+					return (Exists ([chr m]) f)
 
-
-
+getRandomFormulas :: Int -> Int -> IO [Formula]
+getRandomFormulas _ 0 = return []
+getRandomFormulas d n = do
+			f <- getRandomFormula d
+			fs <- getRandomFormulas d (n-1)
+			return (f:fs)
 
 
 
