@@ -1,9 +1,11 @@
 module Week3 where
 
-import Week3FromLecture
+import Week3FromLecture hiding (Neg)
 import TechniquesWeek3FromLecture
 import System.Random
 import Data.List
+import Week2 -- in lib folder
+import Week2FromLecture
 
 
 -- exercise 3
@@ -43,13 +45,22 @@ testIsPermutation' n = do
 			else do print ("fail on: " ++ show xs ++ " ::: " ++ show ys)
 			testIsPermutation' (n-1)
 
-
 testIsPermutation :: IO ()
 testIsPermutation = testIsPermutation' 50
 
 
 
--- exercise 6
+-- exercise 6 
+testCnf :: IO ()
+testCnf = testForms 10 (\ f -> let g = (cnf(nnf(arrowfree f))) in equiv f g)
+
+
+
+-- exercise 7
+
+
+
+
 
 
 

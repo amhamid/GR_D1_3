@@ -58,27 +58,23 @@ equiv f g = all (\ v -> eval v (h)) (allVals (h)) where h = Equiv f g
 -- f is equivalence to g if only if all valuations of f is equal to all valuations of g
 
 
------------------------------------
--- exercise 3 (Time spent: 1 hour)
------------------------------------
-
+-- ┌──────────────────────────────────────────────────────────────────────────┐
+-- │ Exercise 3 - CNF (Time spent: 1 hour)                                    │
+-- └──────────────────────────────────────────────────────────────────────────┘
 -- precondition: input is arrowfree and nnf
+-- VVZ: incorrect, counterexample: "cnf (Neg (Neg p))" --> Fixed
+-- VVZ: another counterexample: "cnf (Cnj [Cnj [p,q], q])" --> Fixed
+-- VVZ: also only defined for binary conjunction/disjunction --> Fixed
 cnf :: Form -> Form
 cnf (Prop x) = Prop x
 cnf (Neg(Prop x)) = Neg (Prop x)
-cnf (Cnj [f, g]) = Cnj [cnf f, cnf g]
-cnf (Dsj [f, g]) = dist (cnf f, cnf g)
-
--- cnf helper to translate 'P V (Q ^ R)' to '(P V Q) ^ (P V R)' 
--- 	      and also for '(P ^ Q) V R' to '(P V R) ^ (Q V R)'
-dist :: (Form, Form) -> Form
-dist (Cnj [f,f'], g) = Cnj [dist (f,g), dist(f', g)]
-dist (f, Cnj [g, g']) = Cnj [dist (f,g), dist(f, g')]
-dist (f, g) = Dsj [f, g]
+cnf (Neg (Neg (Prop x))) = Prop x
+cnf (Cnj xs) = Cnj (map (cnf) xs)
+cnf (Dsj xs) = Dsj (map (cnf) xs)
 
 -- Testing:
 
 -- after converting Form to CNF then the result should be equivalent with original Form
--- as an example below: we convert form1 to CNF and make a comparison between the original and its convertion. (also for form2 and form3)
-testCnf = and ( map (\ f -> equiv (cnf (nnf(arrowfree f))) f) [form1, form2, form3] ) 
-
+-- VVZ: not just that! it should also actually be in CNF!
+-- as an example below: we convert form1 to CNF and make a comparison between the original and its convertion. (al        so for form2 and form3)
+testCnf' = and ( map (\ f -> equiv (cnf (nnf(arrowfree f))) f) [form1, form2, form3] )
