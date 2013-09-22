@@ -109,3 +109,114 @@ show_test n x y r = do
     if ((length x) == (length y))
     then print ("Test Failt!: y is no permutation x")
     else print ("Test Failt!: y has a diffent lenght then x")
+    
+-- ┌───────────────────────────────────────────────────────────────────────────┐
+-- │ 6. Use the random formula generator from the Techniques slides to test    │
+-- │    your CNF program of last week. (Deliverable: file with tests for CNF   │
+-- │    program, report on the results).                                       │
+-- └───────────────────────────────────────────────────────────────────────────┘
+
+-- ┌───────────────────────────────────────────────────────────────────────────┐
+-- │ setVarWithString: produces a string and adds and 'newline' character      │
+-- └───────────────────────────────────────────────────────────────────────────┘
+setVarWithString :: String -> IO String
+setVarWithString s = return (s ++ "\n")
+
+-- ┌───────────────────────────────────────────────────────────────────────────┐
+-- │ setVarWithString: produces a string of '='                                │
+-- └───────────────────────────────────────────────────────────────────────────┘
+strDividerLine :: IO String
+strDividerLine = return ("===========================================================================\n")
+
+-- ┌───────────────────────────────────────────────────────────────────────────┐
+-- │ strResultFile: constant with the name of the file for the test results    │
+-- └───────────────────────────────────────────────────────────────────────────┘
+strResultFile = "Result.txt"
+
+-- ┌───────────────────────────────────────────────────────────────────────────┐
+-- │ writeCNF_testResult: Prints results to file of varible 'strResultFile'    │
+-- │ Inputs │ Type │ Description                                               │
+-- │ t      │ Int  │ Number of the test                                        │
+-- │ f      │ Form │ Formula of any sort                                       │
+-- │ g      │ Form │ Formula of the CNF sort                                   │
+-- │ r      │ Bool │ Result of the test equiv f g                              │
+-- └───────────────────────────────────────────────────────────────────────────┘
+writeCNF_testResult :: Int -> Form -> Form -> Bool -> IO ()
+writeCNF_testResult t f g r = do
+
+  -- write divider line
+  line <- strDividerLine
+  appendFile strResultFile line 
+  
+  -- write test number
+  line <- (setVarWithString ("Test   : " ++ show t))
+  appendFile strResultFile line 
+  
+  -- generate formula en append to file
+  line <- (setVarWithString ("Formula: " ++ show f))
+  appendFile strResultFile line 
+  
+  -- conver formula too CNF
+  line <- (setVarWithString ("CNF    : " ++ show g))
+  appendFile strResultFile line 
+  
+  -- test if f and g and equivelant
+  if (r == True)
+  then do
+    line <- (setVarWithString ("Test   : OK"))
+    appendFile strResultFile line 
+    
+  else do
+    line <- (setVarWithString ("Test   : FAILT!"))
+    appendFile strResultFile line 
+
+-- ┌───────────────────────────────────────────────────────────────────────────┐
+-- │ testCNF: Test CNF function for 10 random formulas                         │
+-- │ Inputs │ Type │ Description                                               │
+-- │ t      │ Int  │ Number of the test                                        │
+-- └───────────────────────────────────────────────────────────────────────────┘
+testCNF :: Int -> IO()
+testCNF t = do
+  if (t > test_max )
+  then do
+    -- number of test wanted is to big
+    
+    -- write divider line to file
+    line <- strDividerLine
+    appendFile strResultFile line
+    
+    -- write reason changed number of test then requested
+    line <- (setVarWithString ("Too many tests, only " ++ show test_max ++ " test(s) will be done maximal!"))
+    appendFile strResultFile line
+    
+    -- start testint with max tests
+    testCNF test_max
+  
+  else do
+    if (t > 0)
+    then do 
+      -- recursively call test_isPermutation n times 
+      testCNF (t-1)
+
+      -- Place actual test
+      f <- getRandomF
+      let g = cnf(nnf(arrowfree f))
+      let r = equiv f g
+      writeCNF_testResult t f g r
+      
+      -- print progress to the screen
+      print ("Test " ++ show t ++ " done")
+            
+    else do
+      -- write first line to file
+      line <- strDividerLine
+      writeFile strResultFile line
+      
+      -- Start testing!
+      line <- (setVarWithString ("Start Testing...."))
+      appendFile strResultFile line
+
+      -- write divider line to file
+      line <- strDividerLine
+      appendFile strResultFile line
+          
