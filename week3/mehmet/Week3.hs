@@ -6,14 +6,11 @@ where
 -- ║ Imports                                                                   ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 import AW2
-import Week2
+import Week2 hiding (Neg) -- thanx to Ammar!
 import Week3
 import Techniques
 import Data.List
-import Data.Char
 import System.Random
-import System.IO  
-import System.Directory  
 
 
 -- ┌───────────────────────────────────────────────────────────────────────────┐
@@ -225,3 +222,52 @@ testCNF t = do
       line <- strDividerLine
       appendFile strResultFile line
           
+-- ┌───────────────────────────────────────────────────────────────────────────┐
+-- │ 7. Write a random formula generator for formulas of First Order Logic     │
+-- │    (as defined in the Week 3 course slides).                              │                                     │
+-- └───────────────────────────────────────────────────────────────────────────┘
+getRandomChar :: IO Char
+getRandomChar = getStdRandom (randomR ('a','z'))
+
+getRandomFormula :: Int -> IO Formula
+getRandomFormula 0 = do 
+  m <- getRandomChar
+  return (Atom [m] [])
+
+getRandomFormula d = do 
+  n <- getRandomInt 5
+  case n of
+    0 -> do 
+      m <- getRandomChar
+      return (Atom [m] [])
+          
+    1 -> do 
+      f <- getRandomFormula (d-1)
+      return (Neg f)
+       
+    2 -> do 
+      m  <- getRandomInt 5
+      fs <- getRandomFormulas (d-1) m
+      return (Conj fs)
+       
+    3 -> do 
+      m  <- getRandomInt 5
+      fs <- getRandomFormulas (d-1) m
+      return (Disj fs)
+       
+    4 -> do 
+      m <- getRandomChar
+      f <- getRandomFormula (d-1)
+      return (Forall [m] f)
+       
+    5 -> do 
+      m <- getRandomChar
+      f <- getRandomFormula (d-1)
+      return (Exists [m] f)
+       
+getRandomFormulas :: Int -> Int -> IO [Formula]
+getRandomFormulas _ 0 = return []
+getRandomFormulas d n = do
+	f <- getRandomFormula d
+	fs <- getRandomFormulas d (n-1)
+	return (f:fs)
