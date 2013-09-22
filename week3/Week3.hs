@@ -161,38 +161,52 @@ testCNF t = do
 
 
 -- exercise 7
-getRandomInts :: Int -> Int -> IO Int
-getRandomInts n m = getStdRandom (randomR (n,m))
+-- mehmet: changed the getRandomInts to getRandomChar
+getRandomChar :: IO Char
+getRandomChar = getStdRandom (randomR ('a','z'))
 
 getRandomFormula :: Int -> IO Formula
-getRandomFormula 0 = do m <- getRandomInts 97 122  -- 97 is char 'a' and 122 is char 'z'
-                        return (Atom ([chr m]) [])
+getRandomFormula 0 = do 
+  m <- getRandomChar
+  return (Atom [m] [])
 
-getRandomFormula d = do n <- getRandomInt 5
-			case n of
-				0 -> do m <- getRandomInts 97 122
-					return (Atom ([chr m]) [])
-				1 -> do f <- getRandomFormula (d-1)
-					return (Neg f)
-				2 -> do m  <- getRandomInt 5
-					fs <- getRandomFormulas (d-1) m
-					return (Conj fs)
-				3 -> do m  <- getRandomInt 5
-					fs <- getRandomFormulas (d-1) m
-					return (Disj fs)
-				4 -> do m <- getRandomInts 97 122
-					f <- getRandomFormula (d-1)
-					return (Forall ([chr m]) f)
-				5 -> do m <- getRandomInts 97 122
-					f <- getRandomFormula (d-1)
-					return (Exists ([chr m]) f)
-
+getRandomFormula d = do 
+  n <- getRandomInt 5
+  case n of
+    0 -> do 
+      m <- getRandomChar
+      return (Atom [m] [])
+          
+    1 -> do 
+      f <- getRandomFormula (d-1)
+      return (Neg f)
+       
+    2 -> do 
+      m  <- getRandomInt 5
+      fs <- getRandomFormulas (d-1) m
+      return (Conj fs)
+       
+    3 -> do 
+      m  <- getRandomInt 5
+      fs <- getRandomFormulas (d-1) m
+      return (Disj fs)
+       
+    4 -> do 
+      m <- getRandomChar
+      f <- getRandomFormula (d-1)
+      return (Forall [m] f)
+       
+    5 -> do 
+      m <- getRandomChar
+      f <- getRandomFormula (d-1)
+      return (Exists [m] f)
+       
 getRandomFormulas :: Int -> Int -> IO [Formula]
 getRandomFormulas _ 0 = return []
 getRandomFormulas d n = do
-			f <- getRandomFormula d
-			fs <- getRandomFormulas d (n-1)
-			return (f:fs)
+	f <- getRandomFormula d
+	fs <- getRandomFormulas d (n-1)
+	return (f:fs)
 
 
 
