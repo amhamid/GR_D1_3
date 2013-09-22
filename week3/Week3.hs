@@ -8,7 +8,6 @@ import Week2 -- in lib folder
 import Week2FromLecture hiding (Neg)
 import Data.Char
 
-
 -- exercise 3
 genIntList' :: Int -> Int -> IO [Int]
 genIntList' _ 0 = return []
@@ -115,7 +114,7 @@ writeCNF_testResult t f g r = do
     appendFile strResultFile line 
 
 -- ┌───────────────────────────────────────────────────────────────────────────┐
--- │ testCNF: Test CNF function for 10 random formulas                         │
+-- │ testCNF: Test CNF function for t random formulas                          │
 -- │ Inputs │ Type │ Description                                               │
 -- │ t      │ Int  │ Number of the test                                        │
 -- └───────────────────────────────────────────────────────────────────────────┘
@@ -158,10 +157,6 @@ testCNF t = do
       
       -- Start testing!
       line <- (setVarWithString ("Start Testing...."))
-      appendFile strResultFile line
-
-      -- write divider line to file
-      line <- strDividerLine
       appendFile strResultFile line
 
 
