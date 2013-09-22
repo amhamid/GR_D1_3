@@ -4,6 +4,7 @@ import Week3FromLecture
 import TechniquesWeek3FromLecture
 import System.Random
 import Data.List
+import System.IO
 
 genIntList' :: Int -> Int -> IO [Int]
 genIntList' _ 0 = return []
@@ -44,12 +45,36 @@ isPermutation (x:xs) (y:ys) = any ((x:xs)==) (permutations (y:ys))
 -- testIsPermutation x y = x != y
 -- testIsPermutation isPermutation getRandomItems genIntList2
 
+--saveArr :: IO ()
+saveArr = do
+    outh <- openFile "test.txt" WriteMode
+	--x = putStrLn "blaat"
+    hPrint outh "[1,2,3]"
+    hClose outh
 
 
+setVarWithString :: String -> IO String
+setVarWithString s = do return s
 
+testCNF :: IO ()
+testCNF = do        
+  writeFile "Result.txt" "test\n"
+  x <- (setVarWithString ("ssss" ++ show 1 ++ " blabla"))
+--  x <- (putStrLn "ssss")
+  appendFile "Result.txt" x
 
+  
 
-
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
 
 
