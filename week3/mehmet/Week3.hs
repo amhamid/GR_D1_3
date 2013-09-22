@@ -6,9 +6,14 @@ where
 -- ║ Imports                                                                   ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 import AW2
+import Week2
 import Week3
 import Techniques
 import Data.List
+import Data.Char
+import System.Random
+import System.IO  
+import System.Directory  
 
 
 -- ┌───────────────────────────────────────────────────────────────────────────┐
