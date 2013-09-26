@@ -31,8 +31,9 @@ subSet :: (Ord a) => Set a -> Set a -> Bool
 subSet (Set []) _       = True  
 subSet (Set (x:xs)) set = (inSet x set) && subSet (Set xs) set 
 
+-- precondition: the second  argument: (Set s) should be sorted
 insertSet :: (Ord a) => a -> Set a -> Set a 
-insertSet x (Set s) = Set (insertList x s) 
+insertSet x (Set s) = Set (insertList x (sort s)) 
 
 insertList x [] = [x]
 insertList x ys@(y:ys') = case compare x y of 
