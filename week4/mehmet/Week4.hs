@@ -211,16 +211,22 @@ r_union []          uvs         =  uvs
 r_union ((x,y):xys) uvs  = 
    addPairToSetOfPairs (x,y) (r_union xys uvs)
   
--- trClos :: Ord a => Rel a -> Rel 
 trClos' :: (Ord a) => [(a,a)] -> [(a,a)]
 trClos' []  = []
-trClos' xys = r_kp xys 1000
+trClos' xys = nub (r_kp xys 1000)
 
 r_kp :: (Ord a) => [(a,a)] -> Int -> [(a,a)]
-r_kp xys n | (n > 2)  = 
+r_kp xys n | (n > 1)  = 
+
               if ((r_n xys n) /= [])
+              
+              -- (r_n xys n) /= []
               then r_kp (r_union xys (r_n xys n)) (n-1)
-              else r_kp (r_union xys (r_n xys n)) 2
+              
+              -- (r_n xys n) == []
+              else r_kp (r_union xys []) 2
+              
+           -- n = 1   
            | otherwise = r_union xys (r_n xys 2)
 
 -- precondition (x,y) must be filled
