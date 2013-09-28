@@ -174,7 +174,72 @@ print_test t setA setB setR r = do
 -- |                                                                          |
 -- |   (Deliverable: Haskell program, indication of time spent.)              |
 -- +--------------------------------------------------------------------------+
+type Rel a = [(a,a)]
 
+infixr 5 @@
+r @@ s = nub [ (x,z) | (x,y) <- r, (w,z) <- s, y == w ]
+
+test_set6 = [(1,2),            (2,3),      (3,4)] -- R
+test_set7 = [      (1,3),            (2,4)      ] -- R^2  
+test_set8 = [            (1,4)                  ] -- R^2 o R = R^3  
+test_set9 = [(1,2),(1,3),(1,4),(2,3),(2,4),(3,4)] -- UNION of R and R^2 and R^3
+
+r_on_r :: (Ord a) => [(a, a)] -> [(a, a)] -> [(a,a)]
+r_on_r []          []          = []
+r_on_r [(x,y)]     []          = []
+r_on_r []          [(u,v)]     = []
+r_on_r ((x,y):xys) []          = []
+r_on_r []          ((u,v):uvs) = []
+r_on_r ((x,y):xys) ((u,v):uvs) =
+  if y == u
+  then addPairToSetOfPairs (x, v) ((r_on_r [(x,y)] uvs) ++ (r_on_r xys ((u,v):uvs)))
+  else (r_on_r [(x,y)] uvs) ++ (r_on_r xys ((u,v):uvs)) 
+
+r_n :: (Ord a) => [(a, a)] -> Int -> [(a,a)]
+r_n []      _ = []
+r_n [(x,y)] n = [(x,y)]
+r_n xys     n | (n == 0)  = error("n must be greater the 0!")
+              | (n == 1)  = xys
+              | otherwise = r_on_r xys (r_n xys (n-1))
+
+r_union :: (Ord a) => [(a, a)] -> [(a, a)] -> [(a, a)]
+r_union []          []          = []
+r_union [(x,y)]     []          = [(x,y)]
+r_union []          [(u,v)]     = [(u,v)]
+r_union ((x,y):xys) []          = [(x,y)] ++ xys
+r_union []          uvs         =  uvs
+r_union ((x,y):xys) uvs  = 
+   addPairToSetOfPairs (x,y) (r_union xys uvs)
+  
+-- trClos :: Ord a => Rel a -> Rel 
+trClos' :: (Ord a) => [(a,a)] -> [(a,a)]
+trClos' []  = []
+trClos' xys = r_kp xys 1000
+
+r_kp :: (Ord a) => [(a,a)] -> Int -> [(a,a)]
+r_kp xys n | (n > 2)  = 
+              if ((r_n xys n) /= [])
+              then r_kp (r_union xys (r_n xys n)) (n-1)
+              else r_kp (r_union xys (r_n xys n)) 2
+           | otherwise = r_union xys (r_n xys 2)
+
+-- precondition (x,y) must be filled
+-- precondition (u,v) must be filled  
+combine2pairs :: (Ord a) => (a,a) -> (a,a) -> [(a,a)]
+combine2pairs (x,y) (u,v) = 
+  case compare (x,y) (u,v) of 
+    GT -> [(u,v)] ++ [(x,y)]
+    EQ -> [(x,y)]
+    LT -> [(x,y)] ++ [(u,v)] 
+  
+addPairToSetOfPairs :: (Ord a) => (a,a) -> [(a,a)] -> [(a,a)]
+addPairToSetOfPairs (x,y) []          = [(x,y)]
+addPairToSetOfPairs (x,y) uvs@((u,v):uvs') = 
+  case compare (x,y) (u,v) of 
+    GT -> [(u,v)] ++ addPairToSetOfPairs (x,y) uvs'
+    EQ -> uvs
+    LT -> [(x,y)] ++ uvs
+    
 -- +--------------------------------------------------------------------------+
 -- | 5. Test the function trClos from the previous exercise. Devise your own  |
 -- |    test method for this. Try to use random test generation. Define       |
