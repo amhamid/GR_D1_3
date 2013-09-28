@@ -72,11 +72,6 @@ insertList' x ys@(y:ys') =
 -- |    module SetOrd. (Deliverables: Haskell program, test code, short test  |
 -- |    report, indication of time spent.)                                    |
 -- +--------------------------------------------------------------------------+
-test_set1 = Set [1,2,3]     -- Set 1
-test_set2 = Set [3,4,5]     -- Set 2
-test_set3 = Set [3]         -- Set 3 is intersection of Set 1 and 2
-test_set4 = Set [1,2,3,4,5] -- Set 4 is union of Set 1 and 2
-test_set5 = Set [1,2,4,5]   -- Set 5 is difference of Set 1 and 2
 
 -- intersection time spent 1 hour
 intersection :: (Ord a) => Set a -> Set a -> Set a 
@@ -101,7 +96,59 @@ difference  (Set (x:xs)) set2    =
   if (inSet x set2)
   then deleteSet x set2
   else insertSet x (difference (Set xs) set2)
-   
+
+
+-- test report time spent 1/2 hour
+test_set1 = Set [1,2,3]     -- Set 1
+test_set2 = Set [3,4,5]     -- Set 2
+test_set3 = Set [3]         -- Set 3 is intersection of Set 1 and 2
+test_set4 = Set [1,2,3,4,5] -- Set 4 is union of Set 1 and 2
+test_set5 = Set [1,2,4,5]   -- Set 5 is difference of Set 1 and 2
+
+-- short test report of intersection
+test_intersection :: IO()
+test_intersection = do
+  let test = "Intersection"
+  let result = intersection test_set1 test_set2
+  print_test test test_set1 test_set2 result (result == test_set3)
+  
+-- short test report of union
+test_union :: IO()
+test_union = do
+  let test = "Union"
+  let result = union' test_set1 test_set2
+  print_test test test_set1 test_set2 result (result == test_set4)
+  
+-- -- short test report of difference
+test_difference :: IO()
+test_difference = do
+  let test = "Difference"
+  let result = difference test_set1 test_set2
+  print_test test test_set1 test_set2 result (result == test_set5)
+  
+testreport :: IO ()
+testreport = do
+  print ("================================================")
+  print ("Testing Intersection, Union and Difference with:")
+  print ("================================================")
+  test_intersection
+  print ("------------------------------------------------")
+  test_union
+  print ("------------------------------------------------")
+  test_difference
+  print ("------------------------------------------------")
+  print ("Done")
+
+print_test :: (Show a) => String -> Set a -> Set a-> Set a -> Bool -> IO ()
+print_test t setA setB setR r = do  
+  print ("Testing " ++ t ++ " with:")
+  print ("Set A: " ++ show setA)
+  print ("Set B: " ++ show setB)
+  print (t ++ " of Set A and Set B " ++ show setR)
+  if (r == True)
+  then  print ("Test: OK")
+  else  print ("Test: FAILT!")
+  
 -- +--------------------------------------------------------------------------+
 -- | 4. Suppose we implement binary relations as list of pairs, Haskell type  |
 -- |    [(a,a)].                                                              |
