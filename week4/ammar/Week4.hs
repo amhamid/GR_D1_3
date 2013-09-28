@@ -61,5 +61,31 @@ differenceSet (Set xs) (Set ys) = unionSet (differenceSet' (Set xs) (Set ys)) (d
 
 -- exercise 4
 
+type Rel a = [(a,a)]
+
+infixr 5 @@
+
+(@@) :: Eq a => Rel a -> Rel a -> Rel a
+r @@ s = nub [ (x,z) | (x,y) <- r, (w,z) <- s, y == w ]
+
+trClos :: Eq a => Rel a -> Rel a
+trClos [] = []
+trClos (x:xs) = ([x] ++ ([x] @@ (trClos xs))) ++ (trClos xs)  
+
+
+
+-- exercise 5
+--
+-- TODO testing properties
+--
+
+
+
+
+
+
+
+
+
   
   
