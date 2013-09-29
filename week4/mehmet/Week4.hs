@@ -172,7 +172,7 @@ print_test t setA setB setR r = do
 -- |    E.g., trClos [(1,2),(2,3),(3,4)] should give                          |
 -- |    [(1,2),(1,3),(1,4),(2,3),(2,4),(3,4)].                                |
 -- |                                                                          |
--- |   (Deliverable: Haskell program, indication of time spent.)              |
+-- |   (Deliverable: Haskell program, indication of time spent. 4 hours)      |
 -- +--------------------------------------------------------------------------+
 type Rel a = [(a,a)]
 
