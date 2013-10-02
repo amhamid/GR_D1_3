@@ -59,6 +59,14 @@ split xs =
 splitA :: [a] -> ([a],[a])
 splitA = assert1 (\ xs (ys,zs) -> True ) split  
 
+mergeSrtWithSplit :: Ord a => [a] -> [a]
+mergeSrtWithSplit xs = 
+  let (ys, zs) = split xs
+	in merge (mergeSrt ys) (mergeSrt zs)
+
+mergeSrtWithSplitA :: Ord a => [a] -> [a]
+mergeSrtWithSplitA = assert1 (\ xs ys -> sorted ys) mergeSrtWithSplit
+
 -- Test Arrays
 test_Array1 = [0,12,1,2,4,5,1]
 test_Array2 = [1,2,3,4,3,2,6,3,8,4,9]
