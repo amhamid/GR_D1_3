@@ -60,9 +60,11 @@ splitA :: [a] -> ([a],[a])
 splitA = assert1 (\ xs (ys,zs) -> True ) split  
 
 mergeSrtWithSplit :: Ord a => [a] -> [a]
-mergeSrtWithSplit xs = 
-  let (ys, zs) = split xs
-	in merge (mergeSrt ys) (mergeSrt zs)
+mergeSrtWithSplit []     = []
+mergeSrtWithSplit [x]    = [x]
+mergeSrtWithSplit (x:xs) = 
+  let (ys,zs) = split (x:xs) 
+  in merge (mergeSrtUsingSplit ys) (mergeSrtUsingSplit zs)
 
 mergeSrtWithSplitA :: Ord a => [a] -> [a]
 mergeSrtWithSplitA = assert1 (\ xs ys -> sorted ys) mergeSrtWithSplit
