@@ -1,9 +1,9 @@
-module Week5_2
+module Week5FromLecture
 
 where
 
 import Data.List
-import Week4 
+import Week4FromLecture 
 
 pre1 :: (a -> Bool) -> (a -> b) -> a -> b 
 pre1 p f x = if p x then f x 
