@@ -1,9 +1,9 @@
-module Week5FromLecture
+module Week5_2
 
 where
 
 import Data.List
-import Week4FromLecture 
+import Week4 
 
 pre1 :: (a -> Bool) -> (a -> b) -> a -> b 
 pre1 p f x = if p x then f x 
@@ -85,6 +85,17 @@ mergeA :: Ord a => [a] -> [a] -> [a]
 mergeA = assert2 sortedProp 
             $ assert2 sublistProp merge
 
+divides :: Integer -> Integer -> Bool
+divides n m = rem m n == 0
+
+forall = flip all
+
+isGCD :: Integer -> Integer -> Integer -> Bool
+isGCD k m n = divides n k && divides n m && 
+              forall [1..min k m] 
+              (\ x -> (divides x k && divides x m) 
+                        ==> divides x n)
+
 ext_gcd :: Integer -> Integer -> (Integer,Integer) 
 ext_gcd a b = let 
    x = 0
@@ -125,10 +136,8 @@ fct_gcd a b =
        (s,t) = fct_gcd b r 
      in (t, s - q*t)
 
-divides :: Integer -> Integer -> Bool
-divides n m = rem m n == 0
-
-gcd_property :: Integer -> Integer -> (Integer,Integer) -> Bool
+gcd_property :: Integer -> Integer 
+                -> (Integer,Integer) -> Bool
 gcd_property = \ m n (x,y) -> let 
     d = x*m + y*n 
   in 
@@ -198,9 +207,6 @@ positions, values :: [Int]
 positions = [1..9]
 values    = [1..9] 
 
-blocks :: [[Int]]
-blocks = [[1..3],[4..6],[7..9]]
-
 showDgt :: Value -> String
 showDgt 0 = " "
 showDgt d = show d
@@ -249,10 +255,24 @@ showSudoku = showGrid . sud2grid
 bl :: Int -> [Int]
 bl x = concat $ filter (elem x) blocks 
 
+blocks :: [[Int]]
+blocks = [[1..3],[4..6],[7..9]]
+
 subGrid :: Sudoku -> (Row,Column) -> [Value]
 subGrid s (r,c) = 
   [ s (r',c') | r' <- bl r, c' <- bl c ]
 
+blocks' :: [[Int]]
+blocks' = [[2..4],[6..8]]
+
+bl' :: Int -> [Int]
+bl' x = concat $ filter (elem x) blocks'   
+  
+subGrid' :: Sudoku -> (Row,Column) -> [Value]
+subGrid' s (r,c) = 
+  [ s (r',c') | r' <- bl' r, c' <- bl' c ]  
+  
+  
 freeInSeq :: [Value] -> [Value]
 freeInSeq seq = values \\ seq 
 
@@ -267,11 +287,15 @@ freeInColumn s c =
 freeInSubgrid :: Sudoku -> (Row,Column) -> [Value]
 freeInSubgrid s (r,c) = freeInSeq (subGrid s (r,c))
 
+freeInSubgrid' :: Sudoku -> (Row,Column) -> [Value]
+freeInSubgrid' s (r,c) = freeInSeq (subGrid' s (r,c))
+
 freeAtPos :: Sudoku -> (Row,Column) -> [Value]
 freeAtPos s (r,c) = 
   (freeInRow s r) 
    `intersect` (freeInColumn s c) 
    `intersect` (freeInSubgrid s (r,c)) 
+   `intersect` (freeInSubgrid' s (r,c)) 
 
 injective :: Eq a => [a] -> Bool
 injective xs = nub xs == xs
@@ -288,6 +312,10 @@ subgridInjective :: Sudoku -> (Row,Column) -> Bool
 subgridInjective s (r,c) = injective vs where 
    vs = filter (/= 0) (subGrid s (r,c))
 
+subgridInjective' :: Sudoku -> (Row,Column) -> Bool
+subgridInjective' s (r,c) = injective vs where 
+   vs = filter (/= 0) (subGrid' s (r,c))   
+   
 consistent :: Sudoku -> Bool
 consistent s = and $
                [ rowInjective s r |  r <- positions ]
@@ -296,6 +324,9 @@ consistent s = and $
                 ++
                [ subgridInjective s (r,c) | 
                     r <- [1,4,7], c <- [1,4,7]]
+				++
+			   [ subgridInjective' s (r,c) | 
+                    r <- [2,6], c <- [2,6]]
 
 extend :: Sudoku -> (Row,Column,Value) -> Sudoku
 extend s (r,c,v) (i,j) | (i,j) == (r,c) = v
@@ -327,12 +358,17 @@ prune _ [] = []
 prune (r,c,v) ((x,y,zs):rest)
   | r == x = (x,y,zs\\[v]) : prune (r,c,v) rest
   | c == y = (x,y,zs\\[v]) : prune (r,c,v) rest
+  | sameblock' (r,c) (x,y) = 
+        (x,y,zs\\[v]) : prune (r,c,v) rest
   | sameblock (r,c) (x,y) = 
         (x,y,zs\\[v]) : prune (r,c,v) rest
   | otherwise = (x,y,zs) : prune (r,c,v) rest
 
 sameblock :: (Row,Column) -> (Row,Column) -> Bool
 sameblock (r,c) (x,y) = bl r == bl x && bl c == bl y 
+
+sameblock' :: (Row,Column) -> (Row,Column) -> Bool
+sameblock' (r,c) (x,y) = bl' r == bl' x && bl' c == bl' y 
 
 initNode :: Grid -> [Node]
 initNode gr = let s = grid2sud gr in 
@@ -424,3 +460,13 @@ example5 = [[1,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,8,0],
             [0,0,0,0,0,0,0,0,9]]
 
+example6 :: Grid
+example6 = [[0,0,0,3,0,0,0,0,0],
+            [0,0,0,7,0,0,3,0,0],
+            [2,0,0,0,0,0,0,0,8],
+            [0,0,6,0,0,5,0,0,0],
+            [0,9,1,6,0,0,0,0,0],
+            [3,0,0,0,7,1,2,0,0],
+            [0,0,0,0,0,0,0,3,1],
+            [0,8,0,0,4,0,0,0,0],
+            [0,0,2,0,0,0,0,0,0]]
