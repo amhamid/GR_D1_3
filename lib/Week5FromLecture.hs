@@ -211,31 +211,51 @@ showDgt :: Value -> String
 showDgt 0 = " "
 showDgt d = show d
 
-showRow :: [Value] -> IO()
-showRow [a1,a2,a3,a4,a5,a6,a7,a8,a9] = 
- do  putChar '|'         ; putChar ' '
-     putStr (showDgt a1) ; putChar ' '
-     putStr (showDgt a2) ; putChar ' '
-     putStr (showDgt a3) ; putChar ' '
-     putChar '|'         ; putChar ' '
-     putStr (showDgt a4) ; putChar ' '
-     putStr (showDgt a5) ; putChar ' '
-     putStr (showDgt a6) ; putChar ' '
-     putChar '|'         ; putChar ' '
-     putStr (showDgt a7) ; putChar ' '
-     putStr (showDgt a8) ; putChar ' '
-     putStr (showDgt a9) ; putChar ' '
-     putChar '|'         ; putChar '\n'
+showRow1 :: [Value] -> IO()
+showRow1 [a1,a2,a3,a4,a5,a6,a7,a8,a9] = 
+ do  putChar '|'; putChar ' '             ; putStr (showDgt a1)
+     putChar ' '; putChar ' '             ; putStr (showDgt a2)
+     putChar ' '; putChar ' '             ; putStr (showDgt a3)
+     putChar ' '; putChar '|'; putChar ' '; putStr (showDgt a4)
+     putChar ' '; putChar ' '             ; putStr (showDgt a5)
+     putChar ' '; putChar ' '             ; putStr (showDgt a6)
+     putChar ' '; putChar '|'; putChar ' '; putStr (showDgt a7)
+     putChar ' '; putChar ' '             ; putStr (showDgt a8)
+     putChar ' '; putChar ' '             ; putStr (showDgt a9)
+     putChar ' '; putChar '|'; putChar '\n'
+     
+showRow2 :: [Value] -> IO()
+showRow2 [a1,a2,a3,a4,a5,a6,a7,a8,a9] = 
+ do  putChar '|'; putChar ' '             ; putStr (showDgt a1)
+     putChar ' '; putChar '|'             ; putStr (showDgt a2)
+     putChar ' '; putChar ' '             ; putStr (showDgt a3)
+     putChar ' '; putChar '|'; putChar ' '; putStr (showDgt a4)
+     putChar '|'; putChar ' '             ; putStr (showDgt a5)
+     putChar ' '; putChar '|'             ; putStr (showDgt a6)
+     putChar ' '; putChar '|'; putChar ' '; putStr (showDgt a7)
+     putChar ' '; putChar ' '             ; putStr (showDgt a8)
+     putChar '|'; putChar ' '             ; putStr (showDgt a9)
+     putChar ' '; putChar '|'; putChar '\n'
 
 showGrid :: Grid -> IO()
 showGrid [as,bs,cs,ds,es,fs,gs,hs,is] =
- do putStrLn ("+-------+-------+-------+")
-    showRow as; showRow bs; showRow cs
-    putStrLn ("+-------+-------+-------+")
-    showRow ds; showRow es; showRow fs
-    putStrLn ("+-------+-------+-------+")
-    showRow gs; showRow hs; showRow is
-    putStrLn ("+-------+-------+-------+")
+ do putStrLn ("+---------+---------+---------+")
+    showRow1 as; 
+    putStrLn ("|   +-----|--+   +--|-----+   |")
+    showRow2 bs; 
+    showRow2 cs
+    putStrLn ("+---------+---------+---------+")
+    showRow2 ds; 
+    putStrLn ("|   +-----|--+   +--|-----+   |")
+    showRow1 es; 
+    putStrLn ("|   +-----|--+   +--|-----+   |")
+    showRow2 fs
+    putStrLn ("+---------+---------+---------+")
+    showRow2 gs; 
+    showRow2 hs; 
+    putStrLn ("|   +-----|--+   +--|-----+   |")
+    showRow1 is
+    putStrLn ("+---------+---------+---------+")
 
 type Sudoku = (Row,Column) -> Value
 
