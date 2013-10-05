@@ -5,6 +5,7 @@ where
 import Data.List
 import Week5FromLecture
 import RandomSudoku
+import Data.Time.Clock
 
 
 -------------------------
@@ -92,34 +93,129 @@ mergeSrtUsingSplitA = assert1 (\ _ x -> sorted x) mergeSrtUsingSplit
 
 
 
--------------------------
--- exercise 4
--------------------------
+-- +---------------------------------------------------------------------------+
+-- ¦ 4. The course notes of this week contain a sudoku solver. A sudoku        ¦
+-- ¦    generator written in Haskell is available on the course web page, as   ¦
+-- ¦    RandomSudoku.hs. Use your program from the previous exercise and this  ¦
+-- ¦    program to create a program that generates NRC-Handelsblad sudoku      ¦
+-- ¦    problems. Deliverables: NRC-Handelsblad sudoku generator, indication   ¦
+-- ¦    of time spent. (2 Hours)                                               ¦
+-- +---------------------------------------------------------------------------+
 
--- in lib/RandomSudoku.hs there is already a function that generate the problem (genProblem)
--- This function already use our modified functions from lib/Week5FromLecture.hs that solve
--- NRC-Handelsblad Sudoku problem
-
--- show a random generated problem
-showGeneratedProblem = do
-			[r] <- rsolveNs [emptyN]
-			showNode r
-			s  <- genProblem r
+gen_N_Random_NRC_Sudoku :: Int -> IO()
+gen_N_Random_NRC_Sudoku n = do 
+	if n <= 0 
+	then error ("Input must be greater then 0\n Example gen_N_Random_NRC_Sudoku 4")
+	else do
+		if n == 1 
+		then do
+			print ("NRC Sudoku Problem:" ++ show n)
+			s <- genRandomNodeProblem
 			showNode s
+			
+		else do
+			gen_N_Random_NRC_Sudoku (n-1)
+			print ("NRC Sudoku Problem:" ++ show n)
+			s <- genRandomNodeProblem
+			showNode s
+			
+genRandomNodeProblem :: IO Node
+genRandomNodeProblem = do 
+	[r] <- rsolveNs [emptyN]
+	s   <- genProblem r
+	return s
 
+	
+showNode' :: Node -> Grid
+showNode' = sud2grid . fst	
 
+genRandomGrid :: IO Grid
+genRandomGrid = do
+	s <- genRandomNodeProblem
+	return (showNode' s)
+	
+genRandomGrids :: Int -> IO [Grid]
+genRandomGrids 0 = return []
+genRandomGrids n = do 
+	g  <- genRandomGrid
+	gs <- genRandomGrids (n-1) 
+	return (g:gs)
 
--------------------------
--- exercise 5
--------------------------
+-- +---------------------------------------------------------------------------+
+-- ¦ 5. Test your programs from the previous two exercises, and document the   ¦
+-- ¦    test process. One important property to test is whether the generated  ¦
+-- ¦    sudoku problems are minimal. How can you test this?                    ¦
+-- ¦    Deliverables: testing code, test report, indication of time spent.     ¦
+-- +---------------------------------------------------------------------------+
+-- minimal means: the mimimal amount of hints for a unique solution
+-- this can bu tested by counting the non zero's
+tst_NRCS = [[[0,0,0,0,0,0,0,8,1]
+            ,[0,0,3,2,0,0,0,0,0]
+            ,[0,9,0,8,0,0,2,0,0]
+			,[0,0,0,0,0,0,0,0,0]
+			,[0,5,0,0,0,0,6,0,0]
+			,[0,0,0,0,0,0,0,0,0]
+			,[1,0,0,0,0,0,0,0,0]
+			,[0,6,0,0,0,0,5,0,0]
+			,[0,0,7,0,6,0,0,4,3]],
+			[[0,0,0,0,0,0,0,5,0]
+			,[2,3,0,0,1,0,0,0,0]
+			,[7,0,0,0,0,0,0,0,9]
+			,[0,0,0,0,0,0,0,7,0]
+			,[4,0,5,0,0,0,0,1,0]
+			,[0,9,0,0,5,2,0,0,0]
+			,[0,0,0,0,0,0,0,0,0]
+			,[1,0,0,2,0,0,0,0,0]
+			,[0,0,0,8,0,9,0,0,0]]]
 
+-- Minimal Grid, counts the non Zeros
+minimalGrid :: (Num a, Ord a) => [[a]] -> Int
+minimalGrid [[]]   = 0
+minimalGrid [x]    = length (filter (>0) x)
+minimalGrid (x:xs) = (length (filter (>0) x)) + (minimalGrid xs)
 
--- TODO discuss this with the team !!!
---
--- Test Properties:
--- 1. The generated problem has a unique solution
--- 2. The generated problem has minimal filled positions where still has a unique solution 
+-- test a n-number of random Grid and put the minimal in a array and find the lowest minimal
+find_Minimals_Of_NRC :: Int -> IO [Int]
+find_Minimals_Of_NRC 0 = return []
+find_Minimals_Of_NRC n = do 
+	g <- genRandomGrid
+	let m = minimalGrid g
+	ms <- find_Minimals_Of_NRC (n-1) 
+	return (m:ms)
+	
 
+test = do
+		g <- genRandomGrid
+		let (x:xs) = initNode g
+		return (uniqueSol x)
+
+find_Minimal_Of_NRC :: IO()
+find_Minimal_Of_NRC = do
+	
+	-- Start Time
+	st <- time
+	print ("Start   : " ++ show  st)
+	
+	-- find the minimals of random NRC's
+	m <- find_Minimals_Of_NRC 4
+	print ("Minimals: " ++ show m)
+	
+    -- End Time
+	et <- time
+	print ("End     : " ++ show et)
+		
+	let dt = et - st
+	print ("Diff    : " ++ show dt)
+
+-- result:
+{-
+"Start   :49744.7264903s"
+"Minimals:[16,17,16,19]"
+"End     :49944.7119127s"
+"Diff    :199.9854224s"	
+-}
+-- get time in seconds		
+time = getCurrentTime >>= return . utctDayTime	
 
 
 
