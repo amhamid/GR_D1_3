@@ -184,25 +184,61 @@ genRandomGrids n = do
 -- this can bu tested by counting the non zero's
 tst_NRCS = [[[0,0,0,0,0,0,0,8,1]
             ,[0,0,3,2,0,0,0,0,0]
-			,[0,9,0,8,0,0,2,0,0]
-			,[0,0,0,0,0,0,0,0,0]
-			,[0,5,0,0,0,0,6,0,0]
-			,[0,0,0,0,0,0,0,0,0]
-			,[1,0,0,0,0,0,0,0,0]
-			,[0,6,0,0,0,0,5,0,0]
-			,[0,0,7,0,6,0,0,4,3]],
-		    [[0,0,0,0,0,0,0,5,0]
-		    ,[2,3,0,0,1,0,0,0,0]
-			,[7,0,0,0,0,0,0,0,9]
-			,[0,0,0,0,0,0,0,7,0]
-			,[4,0,5,0,0,0,0,1,0]
-			,[0,9,0,0,5,2,0,0,0]
-			,[0,0,0,0,0,0,0,0,0]
-			,[1,0,0,2,0,0,0,0,0]
-			,[0,0,0,8,0,9,0,0,0]]]
+            ,[0,9,0,8,0,0,2,0,0]
+	    ,[0,0,0,0,0,0,0,0,0]
+	    ,[0,5,0,0,0,0,6,0,0]
+	    ,[0,0,0,0,0,0,0,0,0]
+	    ,[1,0,0,0,0,0,0,0,0]
+	    ,[0,6,0,0,0,0,5,0,0]
+	    ,[0,0,7,0,6,0,0,4,3]],
+	    [[0,0,0,0,0,0,0,5,0]
+	    ,[2,3,0,0,1,0,0,0,0]
+	    ,[7,0,0,0,0,0,0,0,9]
+	    ,[0,0,0,0,0,0,0,7,0]
+	    ,[4,0,5,0,0,0,0,1,0]
+	    ,[0,9,0,0,5,2,0,0,0]
+	    ,[0,0,0,0,0,0,0,0,0]
+	    ,[1,0,0,2,0,0,0,0,0]
+	    ,[0,0,0,8,0,9,0,0,0]]]
 
 -- Minimal Grid, counts the non Zeros
 minimalGrid :: (Num a, Ord a) => [[a]] -> Int
 minimalGrid [[]]   = 0
 minimalGrid [x]    = length (filter (>0) x)
-minimalGrid (x:xs) = (length (filter (>0) x)) + (minimalGrid xs)	
+minimalGrid (x:xs) = (length (filter (>0) x)) + (minimalGrid xs)
+
+-- test a n-number of random Grid and put the minimal in a array and find the lowest minimal
+find_Minimals_Of_NRC :: Int -> IO [Int]
+find_Minimals_Of_NRC 0 = return []
+find_Minimals_Of_NRC n = do 
+	g <- genRandomGrid
+	let m = minimalGrid g
+	ms <- find_Minimals_Of_NRC (n-1) 
+	return (m:ms)
+	
+find_Minimal_Of_NRC :: IO()
+find_Minimal_Of_NRC = do
+	
+	-- Start Time
+	st <- time
+	print ("Start   : " ++ show  st)
+	
+	-- find the minimals of random NRC's
+	m <- find_Minimals_Of_NRC 4
+	print ("Minimals: " ++ show m)
+	
+    -- End Time
+	et <- time
+	print ("End     : " ++ show et)
+		
+	let dt = et - st
+	print ("Diff    : " ++ show dt)
+
+-- result:
+"Start   :49744.7264903s"
+"Minimals:[16,17,16,19]"
+"End     :49944.7119127s"
+"Diff    :199.9854224s"	
+	
+-- get time in seconds		
+time = getCurrentTime >>= return . utctDayTime	
