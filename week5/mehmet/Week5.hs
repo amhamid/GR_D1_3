@@ -121,48 +121,55 @@ test6_splitA = (splitA test_Array2) == test_Array5         -- False
 -- │    formalization in a program that can solve this sudoku. Deliverables:   │
 -- │    formal statement of new constraint, modified Haskell program, sudoku   │
 -- └───────────────────────────────────────────────────────────────────────────┘
-showRow1 :: [Value] -> IO()
-showRow1 [a1,a2,a3,a4,a5,a6,a7,a8,a9] = 
- do  putChar '|'; putChar ' '             ; putStr (showDgt a1)
-     putChar ' '; putChar ' '             ; putStr (showDgt a2)
-     putChar ' '; putChar ' '             ; putStr (showDgt a3)
-     putChar ' '; putChar '|'; putChar ' '; putStr (showDgt a4)
-     putChar ' '; putChar ' '             ; putStr (showDgt a5)
-     putChar ' '; putChar ' '             ; putStr (showDgt a6)
-     putChar ' '; putChar '|'; putChar ' '; putStr (showDgt a7)
-     putChar ' '; putChar ' '             ; putStr (showDgt a8)
-     putChar ' '; putChar ' '             ; putStr (showDgt a9)
-     putChar ' '; putChar '|'; putChar '\n'
-     
-showRow2 :: [Value] -> IO()
-showRow2 [a1,a2,a3,a4,a5,a6,a7,a8,a9] = 
- do  putChar '|'; putChar ' '             ; putStr (showDgt a1)
-     putChar ' '; putChar '|'             ; putStr (showDgt a2)
-     putChar ' '; putChar ' '             ; putStr (showDgt a3)
-     putChar ' '; putChar '|'; putChar ' '; putStr (showDgt a4)
-     putChar '|'; putChar ' '             ; putStr (showDgt a5)
-     putChar ' '; putChar '|'             ; putStr (showDgt a6)
-     putChar ' '; putChar '|'; putChar ' '; putStr (showDgt a7)
-     putChar ' '; putChar ' '             ; putStr (showDgt a8)
-     putChar '|'; putChar ' '             ; putStr (showDgt a9)
-     putChar ' '; putChar '|'; putChar '\n'
+-- We made modification to 'lib/Week5FromLecture.hs' so that we can check 
+-- consistency of subgrid (2,2) (2,6) (6,2) (6,6) and also get freePosAt 
+-- subgrid [1,4,7] and subgrid [2,6]. The new function is ended by ' so for 
+-- example bl' subGrid' etc.
 
-showGrid' :: Grid -> IO()
-showGrid' [as,bs,cs,ds,es,fs,gs,hs,is] =
- do putStrLn ("+---------+---------+---------+")
-    showRow1 as; 
-    putStrLn ("|   +-----|--+   +--|-----+   |")
-    showRow2 bs; 
-    showRow2 cs
-    putStrLn ("+---------+---------+---------+")
-    showRow2 ds; 
-    putStrLn ("|   +-----|--+   +--|-----+   |")
-    showRow1 es; 
-    putStrLn ("|   +-----|--+   +--|-----+   |")
-    showRow2 fs
-    putStrLn ("+---------+---------+---------+")
-    showRow2 gs; 
-    showRow2 hs; 
-    putStrLn ("|   +-----|--+   +--|-----+   |")
-    showRow1 is
-    putStrLn ("+---------+---------+---------+")
+-- ┌───────────────────────────────────────────────────────────────────────────┐
+-- │ 4. The course notes of this week contain a sudoku solver. A sudoku        │
+-- │    generator written in Haskell is available on the course web page, as   │
+-- │    RandomSudoku.hs. Use your program from the previous exercise and this  │
+-- │    program to create a program that generates NRC-Handelsblad sudoku      │
+-- │    problems. Deliverables: NRC-Handelsblad sudoku generator, indication   │
+-- │    of time spent. (2 Hours)                                               │
+-- └───────────────────────────────────────────────────────────────────────────┘
+
+gen_N_Random_NRC_Sudoku :: Int -> IO()
+gen_N_Random_NRC_Sudoku n = do 
+	if n <= 0 
+	then error ("Input must be greater then 0\n Example gen_N_Random_NRC_Sudoku 4")
+	else do
+		if n == 1 
+		then do
+			print ("NRC Sudoku Problem:" ++ show n)
+			s <- genRandomNodeProblem
+			showNode s
+			
+		else do
+			gen_N_Random_NRC_Sudoku (n-1)
+			print ("NRC Sudoku Problem:" ++ show n)
+			s <- genRandomNodeProblem
+			showNode s
+			
+genRandomNodeProblem :: IO Node
+genRandomNodeProblem = do 
+	[r] <- rsolveNs [emptyN]
+	s   <- genProblem r
+	return s
+
+	
+showNode' :: Node -> Grid
+showNode' = sud2grid . fst	
+
+genRandomGrid :: IO Grid
+genRandomGrid = do
+	s <- genRandomNodeProblem
+	return (showNode' s)
+	
+genRandomGrids :: Int -> IO [Grid]
+genRandomGrids 0 = return []
+genRandomGrids n = do 
+	g  <- genRandomGrid
+	gs <- genRandomGrids (n-1) 
+	return (g:gs)	
