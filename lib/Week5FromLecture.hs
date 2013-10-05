@@ -243,6 +243,7 @@ showGrid [as,bs,cs,ds,es,fs,gs,hs,is] =
     showRow1 as; 
     putStrLn ("|   +-----|--+   +--|-----+   |")
     showRow2 bs; 
+	--putStrLn ("|   |     |  |   |  |     |   |")
     showRow2 cs
     putStrLn ("+---------+---------+---------+")
     showRow2 ds; 
@@ -252,6 +253,7 @@ showGrid [as,bs,cs,ds,es,fs,gs,hs,is] =
     showRow2 fs
     putStrLn ("+---------+---------+---------+")
     showRow2 gs; 
+	--putStrLn ("|   |     |  |   |  |     |   |")
     showRow2 hs; 
     putStrLn ("|   +-----|--+   +--|-----+   |")
     showRow1 is
