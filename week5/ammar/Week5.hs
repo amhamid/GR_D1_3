@@ -113,13 +113,23 @@ showGeneratedProblem = do
 -- exercise 5
 -------------------------
 
+-- minimal means: the mimimal amount of hints with a unique solution
+genRandomNodeProblem :: IO Node
+genRandomNodeProblem = do
+			[r] <- rsolveNs [emptyN]
+			s   <- genProblem r
+			return s
 
--- TODO discuss this with the team !!!
---
--- Test Properties:
--- 1. The generated problem has a unique solution
--- 2. The generated problem has minimal filled positions where still has a unique solution 
+showNode' :: Node -> Grid
+showNode' = sud2grid . fst
 
+genRandomGrid :: IO Grid
+genRandomGrid = do
+		s <- genRandomNodeProblem
+		return (showNode' s)
 
+testMinimal = do	
+		g <- genRandomGrid
+		return (and (map (uniqueSol) (initNode g)))
 
 

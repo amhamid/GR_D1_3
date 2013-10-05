@@ -147,26 +147,34 @@ genRandomGrids n = do
 -- ¦    sudoku problems are minimal. How can you test this?                    ¦
 -- ¦    Deliverables: testing code, test report, indication of time spent.     ¦
 -- +---------------------------------------------------------------------------+
--- minimal means: the mimimal amount of hints for a unique solution
+
+
+-- minimal means: the mimimal amount of hints with a unique solution
+
+testMinimal = do
+	g <- genRandomGrid
+	return (and (map (uniqueSol) (initNode g)))
+
+-- here are some demonstration to find out the minimal number of hints with a unique solution.
 -- this can bu tested by counting the non zero's
-tst_NRCS = [[[0,0,0,0,0,0,0,8,1]
-            ,[0,0,3,2,0,0,0,0,0]
-            ,[0,9,0,8,0,0,2,0,0]
-			,[0,0,0,0,0,0,0,0,0]
-			,[0,5,0,0,0,0,6,0,0]
-			,[0,0,0,0,0,0,0,0,0]
-			,[1,0,0,0,0,0,0,0,0]
-			,[0,6,0,0,0,0,5,0,0]
-			,[0,0,7,0,6,0,0,4,3]],
-			[[0,0,0,0,0,0,0,5,0]
-			,[2,3,0,0,1,0,0,0,0]
-			,[7,0,0,0,0,0,0,0,9]
-			,[0,0,0,0,0,0,0,7,0]
-			,[4,0,5,0,0,0,0,1,0]
-			,[0,9,0,0,5,2,0,0,0]
-			,[0,0,0,0,0,0,0,0,0]
-			,[1,0,0,2,0,0,0,0,0]
-			,[0,0,0,8,0,9,0,0,0]]]
+tst_NRCS = 	[[[0,0,0,0,0,0,0,8,1]
+            	,[0,0,3,2,0,0,0,0,0]
+        	,[0,9,0,8,0,0,2,0,0]
+        	,[0,0,0,0,0,0,0,0,0]
+		,[0,5,0,0,0,0,6,0,0]
+		,[0,0,0,0,0,0,0,0,0]
+		,[1,0,0,0,0,0,0,0,0]
+		,[0,6,0,0,0,0,5,0,0]
+		,[0,0,7,0,6,0,0,4,3]],
+		[[0,0,0,0,0,0,0,5,0]
+		,[2,3,0,0,1,0,0,0,0]
+		,[7,0,0,0,0,0,0,0,9]
+		,[0,0,0,0,0,0,0,7,0]
+		,[4,0,5,0,0,0,0,1,0]
+		,[0,9,0,0,5,2,0,0,0]
+		,[0,0,0,0,0,0,0,0,0]
+		,[1,0,0,2,0,0,0,0,0]
+		,[0,0,0,8,0,9,0,0,0]]]
 
 -- Minimal Grid, counts the non Zeros
 minimalGrid :: (Num a, Ord a) => [[a]] -> Int
@@ -183,11 +191,10 @@ find_Minimals_Of_NRC n = do
 	ms <- find_Minimals_Of_NRC (n-1) 
 	return (m:ms)
 	
-
+-- TODO
 test = do
-		g <- genRandomGrid
-		let (x:xs) = initNode g
-		return (uniqueSol x)
+	g <- genRandomGrid
+	return (and (map (uniqueSol) (initNode g)))
 
 find_Minimal_Of_NRC :: IO()
 find_Minimal_Of_NRC = do
@@ -207,15 +214,16 @@ find_Minimal_Of_NRC = do
 	let dt = et - st
 	print ("Diff    : " ++ show dt)
 
--- result:
 {-
+result:
+
 "Start   :49744.7264903s"
 "Minimals:[16,17,16,19]"
 "End     :49944.7119127s"
 "Diff    :199.9854224s"	
 -}
+
 -- get time in seconds		
 time = getCurrentTime >>= return . utctDayTime	
-
 
 
