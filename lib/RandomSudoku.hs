@@ -27,11 +27,11 @@ getRandomItem xs =
 
 -- randomize a list
 randomize :: Eq a => [a] -> IO [a]
-randomize xs = do y <- getRandomItem xs 
-                  if null y 
+randomize xs = do zs <- getRandomItem xs 
+                  if null zs 
                     then return []
-                    else do ys <- randomize (xs\\y)
-                            return (head y:ys)                     
+                    else do ys <- randomize (xs\\zs)
+                            return ( (head zs):ys )                     
 
 sameLen :: Constraint -> Constraint -> Bool
 sameLen (_,_,xs) (_,_,ys) = length xs == length ys
@@ -70,6 +70,7 @@ genRandomSudoku :: IO Node
 genRandomSudoku = do [r] <- rsolveNs [emptyN]
                      return r
 
+-- show a random complete sudoku
 randomS = genRandomSudoku >>= showNode
 
 uniqueSol :: Node -> Bool
