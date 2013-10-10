@@ -27,7 +27,8 @@ isPermutation :: Eq a => [a] -> [a] -> Bool
 isPermutation xs ys | length xs /= length ys = False
 		    | xs == ys = True
 		    | otherwise = or (map (==xs) (permutations ys))
-
+-- VVZ: you could also use filter and check if length is 1
+-- VVZ: also, identical arrays is not a "property", it is a simple case (implication goes to the other direction)
 
 
 -- exercise 5
