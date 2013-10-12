@@ -11,23 +11,23 @@ time = getCurrentTime >>= return . utctDayTime
 
 
 -- +---------------------------------------------------------------------------+
--- ¦ 1. Implement a function                                                   ¦
--- ¦                                                                           ¦
--- ¦    exM :: Integer -> Integer -> Integer -> Integer                        ¦
--- ¦                                                                           ¦
--- ¦    that does modular exponentiation of xy in polynomial time, by          ¦
--- ¦    repeatedly squaring modulo N.                                          ¦
--- ¦    E.g., x^33 mod 5 can be computed by means of                           ¦
--- ¦                                                                           ¦
--- ¦          x^33 (mod 5) = x^32 (mod 5) x r (mod 5)                          ¦
--- ¦                                                                           ¦
--- ¦    x^32 (mod N) is computed in five steps by means of repeatedly          ¦
--- ¦    squaring modulo N:                                                     ¦
--- ¦                                                                           ¦
--- ¦    x (mod N) -> x^2 (mod N) -> x^4 (mod N) -> ....... -> x^32 (mod N)     ¦
--- ¦                                                                           ¦
--- ¦    If this explanation is too concise, look up relevant literature.       ¦
--- ¦                                                                           ¦
+-- ï¿½ 1. Implement a function                                                   ï¿½
+-- ï¿½                                                                           ï¿½
+-- ï¿½    exM :: Integer -> Integer -> Integer -> Integer                        ï¿½
+-- ï¿½                                                                           ï¿½
+-- ï¿½    that does modular exponentiation of xy in polynomial time, by          ï¿½
+-- ï¿½    repeatedly squaring modulo N.                                          ï¿½
+-- ï¿½    E.g., x^33 mod 5 can be computed by means of                           ï¿½
+-- ï¿½                                                                           ï¿½
+-- ï¿½          x^33 (mod 5) = x^32 (mod 5) x r (mod 5)                          ï¿½
+-- ï¿½                                                                           ï¿½
+-- ï¿½    x^32 (mod N) is computed in five steps by means of repeatedly          ï¿½
+-- ï¿½    squaring modulo N:                                                     ï¿½
+-- ï¿½                                                                           ï¿½
+-- ï¿½    x (mod N) -> x^2 (mod N) -> x^4 (mod N) -> ....... -> x^32 (mod N)     ï¿½
+-- ï¿½                                                                           ï¿½
+-- ï¿½    If this explanation is too concise, look up relevant literature.       ï¿½
+-- ï¿½                                                                           ï¿½
 -- +---------------------------------------------------------------------------+
 
 -- code is already given!
@@ -44,8 +44,8 @@ exM x y n = let
 
 
 -- +---------------------------------------------------------------------------+
--- ¦ 2. Check that your implementation is more efficient than expM by running  ¦
--- ¦    a number of relevant tests and documenting the results.                ¦
+-- ï¿½ 2. Check that your implementation is more efficient than expM by running  ï¿½
+-- ï¿½    a number of relevant tests and documenting the results.                ï¿½
 -- +---------------------------------------------------------------------------+
 -- example: test_ExpMod' 24 9 23
 test_ExpMod' :: Integer -> Integer -> Integer -> IO()
@@ -151,3 +151,46 @@ carmichael = [ (6*k+1)*(12*k+1)*(18*k+1) |
 -- 			 True
 	
 -- primeMR x == primeMR 2^x-1
+
+-- big primes
+big_primes = sieve1 [21700..]
+sieve1 (n:ns) = n : sieve1 (filter (\ m -> rem m n /= 0) ns)
+
+-- if someone has the time run the function below and find some mersenne prime numberstest_primeMP :: Int -> Int -> [Integer] -> IO()
+test_primeMP n k [] = print ("Done Testing")
+test_primeMP n k (x:xs) = do
+	
+	-- test if x is primeF
+	t <- primeMR k (2^x-1)
+	
+	-- if true then show
+	if (t == True)
+	then do
+		--let p = primeMR k x
+		print ("m" ++ show n ++ " Prime " ++ show x ++ " is Merssenne Prime because (2^" ++ show x ++ "-1) is a Prime as well")
+		test_primeMP (n+1) k xs
+		
+	else do
+		test_primeMP n k xs		
+
+{- Result:
+*AW6> test_primeMP 1 1 primes
+"m1 Prime 2 is Merssenne Prime because (2^2-1) is a Prime as well"
+"m2 Prime 3 is Merssenne Prime because (2^3-1) is a Prime as well"
+"m3 Prime 5 is Merssenne Prime because (2^5-1) is a Prime as well"
+"m4 Prime 7 is Merssenne Prime because (2^7-1) is a Prime as well"
+"m5 Prime 11 is Merssenne Prime because (2^11-1) is a Prime as well"
+"m6 Prime 13 is Merssenne Prime because (2^13-1) is a Prime as well"
+"m7 Prime 17 is Merssenne Prime because (2^17-1) is a Prime as well"
+"m8 Prime 19 is Merssenne Prime because (2^19-1) is a Prime as well"
+"m9 Prime 31 is Merssenne Prime because (2^31-1) is a Prime as well"
+"m10 Prime 61 is Merssenne Prime because (2^61-1) is a Prime as well"
+"m11 Prime 89 is Merssenne Prime because (2^89-1) is a Prime as well"
+"m12 Prime 107 is Merssenne Prime because (2^107-1) is a Prime as well"
+"m13 Prime 127 is Merssenne Prime because (2^127-1) is a Prime as well"
+"m14 Prime 521 is Merssenne Prime because (2^521-1) is a Prime as well"
+"m15 Prime 607 is Merssenne Prime because (2^607-1) is a Prime as well"
+"m16 Prime 1279 is Merssenne Prime because (2^1279-1) is a Prime as well"
+"m17 Prime 2203 is Merssenne Prime because (2^2203-1) is a Prime as well"
+"m18 Prime 2281 is Merssenne Prime because (2^2281-1) is a Prime as well"
+-}
