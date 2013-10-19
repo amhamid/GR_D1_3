@@ -23,11 +23,20 @@ getRandomInts a b = do
 					return (f:fs)
 
 -- Exercise 4
--- A permutation of a nite list is another nite list with the same elements, but possibly in a dierent order. For example, [0,2,0] is a permutation of [0,0,2], but [2,2,0] is not. Write a function
+-- A permutation of a finite list is another finite list with the same elements, but possibly in a different order. For example, [0,2,0] is a permutation of [0,0,2], but [2,2,0] is not. Write a function
 -- That returns True if its arguments are permutations of each other.
 isPermutation :: Eq a => [a] -> [a] -> Bool
+isPermutation _ [] = False
+isPermutation [] _ = False
+isPermutation xs ys = compareLists xs (permutations ys)
 
+compareLists :: Eq a => [a] -> [[a]] -> Bool
+compareLists _ [] = False
+compareLists xs (y:ys) | xs == y = True
+					   | xs /= y = compareLists xs ys
+					   | otherwise = False
 
+-- Exercise 5
 
 
 
