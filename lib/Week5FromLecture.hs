@@ -385,6 +385,7 @@ prune (r,c,v) ((x,y,zs):rest)
   | sameblock (r,c) (x,y) = 
         (x,y,zs\\[v]) : prune (r,c,v) rest
   | otherwise = (x,y,zs) : prune (r,c,v) rest
+-- VVZ: why do you change prune without cloning it to prune'?
 
 sameblock :: (Row,Column) -> (Row,Column) -> Bool
 sameblock (r,c) (x,y) = bl r == bl x && bl c == bl y 

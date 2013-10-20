@@ -18,7 +18,8 @@ mergeSrt (x:xs) = merge [x] (mergeSrt xs)
 
 mergeSrtA :: Ord a => [a] => [a]
 mergeSrtA = assert1 (\ _ x -> sorted x) mergeSrt
-
+-- VVZ: good solution, bad code ;)
+-- VVZ: you will be surprised yourselves if you try to read this code later: usually a good idea to call a list 'xs', not 'x'
 
 
 -------------------------
@@ -46,6 +47,8 @@ mergeSrtUsingSplitA = assert1 (\ _ x -> sorted x) mergeSrtUsingSplit
 
 -- We made modification to 'lib/Week5FromLecture.hs' so that we can check consistency of subgrid (2,2) (2,6) (6,2) (6,6) and also get freePosAt subgrid [1,4,7] and subgrid [2,6].
 -- The new function is ended by ' so for example bl' subGrid' etc.
+-- VVZ: why do you first rename the existing module to contain "from lecture" and then change it so that it becomes not the one from the lecture?
+-- VVZ: your programming style is confusing.
 
 -- For demonstration purpose, we created example6 grid for this exercise:
 
@@ -72,6 +75,7 @@ mergeSrtUsingSplitA = assert1 (\ _ x -> sorted x) mergeSrtUsingSplit
 
 
 -- *Week5> solveAndShow example6
+-- VVZ: where is this solveAndShow?
 
 -- +---------+---------+---------+
 -- | 4  7  8 | 3  9  2 | 6  1  5 |
@@ -94,12 +98,12 @@ mergeSrtUsingSplitA = assert1 (\ _ x -> sorted x) mergeSrtUsingSplit
 
 
 -- +---------------------------------------------------------------------------+
--- ¦ 4. The course notes of this week contain a sudoku solver. A sudoku        ¦
--- ¦    generator written in Haskell is available on the course web page, as   ¦
--- ¦    RandomSudoku.hs. Use your program from the previous exercise and this  ¦
--- ¦    program to create a program that generates NRC-Handelsblad sudoku      ¦
--- ¦    problems. Deliverables: NRC-Handelsblad sudoku generator, indication   ¦
--- ¦    of time spent. (2 Hours)                                               ¦
+-- Â¦ 4. The course notes of this week contain a sudoku solver. A sudoku        Â¦
+-- Â¦    generator written in Haskell is available on the course web page, as   Â¦
+-- Â¦    RandomSudoku.hs. Use your program from the previous exercise and this  Â¦
+-- Â¦    program to create a program that generates NRC-Handelsblad sudoku      Â¦
+-- Â¦    problems. Deliverables: NRC-Handelsblad sudoku generator, indication   Â¦
+-- Â¦    of time spent. (2 Hours)                                               Â¦
 -- +---------------------------------------------------------------------------+
 
 gen_N_Random_NRC_Sudoku :: Int -> IO()
@@ -142,10 +146,10 @@ genRandomGrids n = do
 	return (g:gs)
 
 -- +---------------------------------------------------------------------------+
--- ¦ 5. Test your programs from the previous two exercises, and document the   ¦
--- ¦    test process. One important property to test is whether the generated  ¦
--- ¦    sudoku problems are minimal. How can you test this?                    ¦
--- ¦    Deliverables: testing code, test report, indication of time spent.     ¦
+-- Â¦ 5. Test your programs from the previous two exercises, and document the   Â¦
+-- Â¦    test process. One important property to test is whether the generated  Â¦
+-- Â¦    sudoku problems are minimal. How can you test this?                    Â¦
+-- Â¦    Deliverables: testing code, test report, indication of time spent.     Â¦
 -- +---------------------------------------------------------------------------+
 
 
