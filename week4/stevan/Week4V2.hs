@@ -21,7 +21,7 @@ getRandomInts a b = do
 					fs <- getRandomInts a (b-1)
 					return (f:fs)
 
-genRandomSet :: Set Int
+genRandomSet :: IO (Set Int)
 genRandomSet = list2set genIntList
 
 
