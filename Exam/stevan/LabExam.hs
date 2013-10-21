@@ -18,7 +18,7 @@ key (x,_) = x
 value  (_,y) = y 
 
 -- Question 1
---fA = assert1 (\ (s,r) (t,u) -> ... == ... ) f
+-- fA = assert1 (\ (s,r) (t,u) -> ... == ... ) f
 
 -- Question 2
 -- No answer
