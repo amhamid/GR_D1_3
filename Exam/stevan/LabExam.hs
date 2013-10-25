@@ -194,8 +194,9 @@ lookUp s (B (key, val) t1 t2) = if s == key then [val] ++ lookUp s (t1) ++ lookU
 
 -- Implement a function that looks up a key in an ordered dictionary. Make sure the lookup function exploits the order.
 lookUp' :: String -> Dict -> [String]
-lookUp' s d = let d' = inOrder d
-			  in theHelp s d'
+lookUp' s d = theHelp s (inOrder d)
+--lookUp' s d = let d' = inOrder d
+--			  in theHelp s d'
 
 theHelp :: String -> [(String, String)] -> [String]
 theHelp s [] = []
