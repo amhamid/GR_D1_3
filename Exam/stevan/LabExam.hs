@@ -207,16 +207,6 @@ theHelp s ((key, value):xs) = if s == key then [value] ++ theHelp s xs else theH
 -- lookUp' "y" (B ("y", "yes") Nil Nil)
 -- lookUp' "s" (B ("s", "sexy") (B ("yy", "you") (B ("y", "yes") Nil Nil) Nil) (B ("s", "beast!") Nil Nil))
 
-{-
-theHelp :: String -> [(String, String)] -> [String]
-theHelp s [] = []
-theHelp s [([], [])] = []
-theHelp s [([key], [value])] = [theOtherHelp s [key]]
-theHelp s (([key], [value]):xs) = [theOtherHelp s [key]] ++ theHelp s xs
-
-theOtherHelp :: String -> String -> String
-theOtherHelp s k = if s == k then k else ""
--}
 
 
 
