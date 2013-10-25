@@ -166,13 +166,63 @@ sort [("j", "bla1"), ("e", "bla2"), ("m", "bla3)]
 
 
 
-
-
-
-
-
 -- Question 5
--- No answer
+{-
+data BinTree a = Nil 
+			   | B a (BinTree a) (BinTree a) 
+			   deriving (Eq,Show)
+
+type Dict = BinTree (String,String)
+
+key, value :: (String,String) -> String
+key (x,_) = x
+value (_,y) = y
+-}
+-- Implement a function lookUp :: String -> Dict -> [String] that looks up a key in an ordered dictionary. Make sure the lookup function exploits the order. An output [] indicates that the key is not defined in the dictionary, a non-empty list gives the value for a given key. Recall that the items in the dictionary tree have the form (key,value). You can assume each key occurs at most once in the dictionary.
+-- Implement a function lookUp ::
+lookUp :: String -> Dict -> [String]
+-- that looks up a key in an ordered dictionary. Make sure the lookup function exploits the order.
+-- An output [] indicates that the key is not defined in the dictionary
+lookUp s (B (key, val) Nil Nil) = if s == key then [val] else []
+lookUp s (B (key, val) t1 Nil) = if s == key then [val] ++ lookUp s (t1) else lookUp s (t1)
+lookUp s (B (key, val) Nil t2) = if s == key then [val] ++ lookUp s (t2) else lookUp s (t2)
+-- a non-empty list gives the value for a given key
+lookUp s (B (key, val) t1 t2) = if s == key then [val] ++ lookUp s (t1) ++ lookUp s (t2) else lookUp s (t1) ++ lookUp s (t2)
+-- lookUp "y" (B ("y", "yes") Nil Nil)
+-- lookUp "s" (B ("s", "sexy") (B ("yy", "you") (B ("y", "yes") Nil Nil) Nil) (B ("s", "beast!") Nil Nil))
+
+
+-- Implement a function that looks up a key in an ordered dictionary. Make sure the lookup function exploits the order.
+lookUp' :: String -> Dict -> [String]
+lookUp' s d = let d' = inOrder d
+			  in theHelp s d'
+
+theHelp :: String -> [(String, String)] -> [String]
+theHelp s [] = []
+theHelp s [([], [])] = []
+theHelp s [(key, [])] = []
+theHelp s [([], value)] = []
+theHelp s [(key, value)] = if s == key then [value] else []
+theHelp s ((key, value):xs) = if s == key then [value] ++ theHelp s xs else theHelp s xs
+-- lookUp' "y" (B ("y", "yes") Nil Nil)
+-- lookUp' "s" (B ("s", "sexy") (B ("yy", "you") (B ("y", "yes") Nil Nil) Nil) (B ("s", "beast!") Nil Nil))
+
+{-
+theHelp :: String -> [(String, String)] -> [String]
+theHelp s [] = []
+theHelp s [([], [])] = []
+theHelp s [([key], [value])] = [theOtherHelp s [key]]
+theHelp s (([key], [value]):xs) = [theOtherHelp s [key]] ++ theHelp s xs
+
+theOtherHelp :: String -> String -> String
+theOtherHelp s k = if s == k then k else ""
+-}
+
+
+
+
+
+
 
 -- Question 6
 -- No answer
