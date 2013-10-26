@@ -132,7 +132,6 @@ Nil Nil      Nil Nil
 
 -- Finally, fill in the dots to define a property that can be used to test the two functions by relating them to each other.
 treeProperty :: Eq a => BinTree a -> Bool
--- 
 treeProperty t = inOrder t == reverse (inOrderRev t)
 
 
@@ -179,14 +178,11 @@ key (x,_) = x
 value (_,y) = y
 -}
 -- Implement a function lookUp :: String -> Dict -> [String] that looks up a key in an ordered dictionary. Make sure the lookup function exploits the order. An output [] indicates that the key is not defined in the dictionary, a non-empty list gives the value for a given key. Recall that the items in the dictionary tree have the form (key,value). You can assume each key occurs at most once in the dictionary.
--- Implement a function lookUp ::
+{-
 lookUp :: String -> Dict -> [String]
--- that looks up a key in an ordered dictionary. Make sure the lookup function exploits the order.
--- An output [] indicates that the key is not defined in the dictionary
 lookUp s (B (key, val) Nil Nil) = if s == key then [val] else []
 lookUp s (B (key, val) t1 Nil) = if s == key then [val] ++ lookUp s (t1) else lookUp s (t1)
 lookUp s (B (key, val) Nil t2) = if s == key then [val] ++ lookUp s (t2) else lookUp s (t2)
--- a non-empty list gives the value for a given key
 lookUp s (B (key, val) t1 t2) = if s == key then [val] ++ lookUp s (t1) ++ lookUp s (t2) else lookUp s (t1) ++ lookUp s (t2)
 -- lookUp "y" (B ("y", "yes") Nil Nil)
 -- lookUp "s" (B ("s", "sexy") (B ("yy", "you") (B ("y", "yes") Nil Nil) Nil) (B ("s", "beast!") Nil Nil))
@@ -207,18 +203,68 @@ theHelp s [(key, value)] = if s == key then [value] else []
 theHelp s ((key, value):xs) = if s == key then [value] ++ theHelp s xs else theHelp s xs
 -- lookUp' "y" (B ("y", "yes") Nil Nil)
 -- lookUp' "s" (B ("s", "sexy") (B ("yy", "you") (B ("y", "yes") Nil Nil) Nil) (B ("s", "beast!") Nil Nil))
-
-
-
-
-
-
+-}
+correctLookUp :: String -> Dict -> [String]
+correctLookUp s Nil = []
+correctLookUp s (B (key, val) t1 t2) | s == key = [val]
+									 | s < key = correctLookUp s (t1)
+									 | otherwise = correctLookUp s (t2)
+									 
+-- correctLookUp "y" (B ("y", "yes") Nil Nil)
+-- correctLookUp "s" (B ("s", "sexy") (B ("yy", "you") (B ("y", "yes") Nil Nil) Nil) (B ("s", "beast!") Nil Nil))
+-- correctLookUp
 
 
 -- Question 6
--- No answer
+{-
+data BinTree a = Nil 
+			   | B a (BinTree a) (BinTree a) 
+			   deriving (Eq,Show)
 
+type Dict = BinTree (String,String)
 
+key, value :: (String,String) -> String
+key (x,_) = x
+value (_,y) = y
+
+ordered :: Dict -> Bool
+ordered a = inOrder a == sort (inOrder a) 
+-}
+--Write code for inserting a new item at the correct position in an ordered dictionary.
+--If the key of the item already occurs in the dictionary, replace the old information with the new information, otherwise just insert the new item.
+insertKey :: (String,String) -> Dict -> Dict
+insertKey (key, value) Nil = (B (key, value) Nil Nil)
+insertKey (key, value) (B (k, v) t1 t2) | key == k = (B (k, value) t1 t2)
+										| key < k = (B (k, v) (insertKey (key, value) t1) t2)
+										| otherwise = (B (k, v) t1 (insertKey (key, value) t2))
+
+-- insertKey ("d", "dddd") Nil
+-- insertKey ("c", "ccc") (B ("d","ddd") Nil Nil)
+-- insertKey ("e", "e") (B ("d","ddd") (B ("c","ccc") Nil Nil) Nil)
+-- insertKey ("e", "eeek") (B ("d","ddd") (B ("c","ccc") Nil Nil) (B ("e","e") Nil Nil))
+-- B ("d","ddd") (B ("c","ccc") Nil Nil) (B ("e","eeek") Nil Nil)
+-- insertKey ("y", "yes") (B ("d","ddd") (B ("c","ccc") Nil Nil) (B ("e","e") Nil Nil))
+-- B ("d","ddd") (B ("c","ccc") Nil Nil) (B ("e","e") Nil (B ("y","yes") Nil Nil))
+
+-- Next, write an assertive version of this that checks whether an ordered dictionary is still ordered after the insertion. Use the property ordered :: Dict -> Bool that you defined earlier.
+{-
+ordered :: Dict -> Bool
+ordered a = inOrder a == sort (inOrder a) 
+
+assert1 :: (a -> b -> Bool) -> (a -> b) -> a -> b 
+assert1 p f x = if p x (f x) then f x 
+                else error "assert1"
+-}
+assertDict :: ((String,String) -> Dict -> Dict) -> (String,String) -> Dict -> Bool
+assertDict f x y | ordered y && ordered (f x y) = True
+				 | otherwise = False
+
+-- ordered (B ("s", "sexy") (B ("yy", "you") (B ("y", "yes") Nil Nil) Nil) (B ("s", "beast!") Nil Nil))
+-- False
+-- assertDict ("y", "yes") (B ("s", "sexy") (B ("yy", "you") (B ("y", "yes") Nil Nil) Nil) (B ("s", "beast!") Nil Nil))
+-- ordered (B ("d","ddd") (B ("c","ccc") Nil Nil) (B ("e","e") Nil Nil))
+-- True
+-- assertDict insertKey ("y", "yes") (B ("d","ddd") (B ("c","ccc") Nil Nil) (B ("e","e") Nil Nil))
 
 {-
 
