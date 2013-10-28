@@ -80,8 +80,24 @@ exM3 x e n | e == 0 = mod 1 n
 -- Q2
 -- Check that your implementation is more eficient than exM by running a number of relevant tests and documenting the results.
 
--- Hmm, not sure how to test this... My code looks way prettier and concise then exM, so I can already conclude that its more efficient? :)
-
+-- My code looks way prettier and concise then exM, so can I already conclude that its more efficient? :)
+-- For testing:
+{-
+http://en.wikipedia.org/wiki/Modular_exponentiation#Memory-efficient_method
+e' = 1. c = (1 * 4) mod 497 = 4 mod 497 = 4.			== exM3 4 1 497
+e' = 2. c = (4 * 4) mod 497 = 16 mod 497 = 16.			== exM3 4 2 497
+e' = 3. c = (16 * 4) mod 497 = 64 mod 497 = 64.			== exM3 4 3 497
+e' = 4. c = (64 * 4) mod 497 = 256 mod 497 = 256.		== exM3 4 4 497
+e' = 5. c = (256 * 4) mod 497 = 1024 mod 497 = 30.		== exM3 4 5 497
+e' = 6. c = (30 * 4) mod 497 = 120 mod 497 = 120.		== exM3 4 6 497
+e' = 7. c = (120 * 4) mod 497 = 480 mod 497 = 480.		== exM3 4 7 497
+e' = 8. c = (480 * 4) mod 497 = 1920 mod 497 = 429.		== exM3 4 8 497
+e' = 9. c = (429 * 4) mod 497 = 1716 mod 497 = 225.		== exM3 4 9 497
+e' = 10. c = (225 * 4) mod 497 = 900 mod 497 = 403.		== exM3 4 10 497
+e' = 11. c = (403 * 4) mod 497 = 1612 mod 497 = 121.	== exM3 4 11 497
+e' = 12. c = (121 * 4) mod 497 = 484 mod 497 = 484.		== exM3 4 12 497
+e' = 13. c = (484 * 4) mod 497 = 1936 mod 497 = 445.	== exM3 4 13 497
+-}
 
 
 
